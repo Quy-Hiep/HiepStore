@@ -1,0 +1,282 @@
+﻿@model List<HiepStore.ModelViews.CartItem>
+@{
+    ViewData["Title"] = "Xem giỏ hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var returnUrl = Context.Request.Query["ReturnUrl"];
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<h2 style="text-align: center; margin-bottom: -20px; margin-top: 10px">Quản lý giỏ hàng</h2>
+@if (Model != null)
+{
+    <!-- ========================= SECTION CONTENT ========================= -->
+    <section class="section-content padding-y">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-9">
+                    <div class="card">
+
+                        <table class="table table-borderless table-shopping-cart">
+                            <thead class="text-muted">
+                                <tr class="small text-uppercase">
+                                    <th scope="col">Sản phẩm</th>
+                                    <th scope="col" width="120">Số lượng</th>
+                                    <th scope="col" width="120">Giá</th>
+                                    <th scope="col" class="text-right" width="200"> </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr id="product-@item.product.Id">
+                                            <td>
+                                                <figure class="itemside">
+                                                    <div class="aside"><img src="~/assets/images/products/@item.product.Thumb" class="img-sm"></div>
+                                                    <figcaption class="info">
+                                                        <a href="#" class="title text-dark">@item.product.Name</a>
+                                                    </figcaption>
+                                                </figure>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="cartItem" data-mahh="@item.product.Id" value="@item.amount" />
+                                                @*<script>
+                                    var count = 1;
+                                    $("#button-plus").click(function () {
+                                    if ($("#ipQuantity-@item.Product.Id").val() >= 20) {
+                                    $("#button-plus").attr("disabled", true);
+                                    } else {
+                                    count += 1;
+                                    $("#ipQuantity-@item.Product.Id").val(count);
+                                    }
+                                    });
+                                    $("#button-minus").click(function () {
+                                    if ($("#ipQuantity-@item.Product.Id").val() <= 1) {
+                                    $("#button-minus").attr("disabled", true);
+                                    } else {
+                                    count -= 1;
+                                    $("#ipQuantity-@item.Product.Id").val(count);
+                                    }
+                                    });
+                                    $("#ipQuantity").change(function () {
+                                    if ($("#ipQuantity-@item.Product.Id").val() <= 1 || $("#ipQuantity-@item.Product.Id").val() >= 20) {
+                                    alert("Nhập số lượng phù hợp !");
+                                    $("#ipQuantity-@item.Product.Id").val("1");
+                                    }
+                                    })
+                                    </script>
+                                    <div class="input-group mb-3 input-spinner">
+                                    <div class="input-group-prepend">
+                                    <button class="btn btn-light" type="button" id="button-plus"> + </button>
+                                    </div>
+                                    <input type="text" id="ipQuantity-@item.Product.Id" class="form-control" onchange="UpdateCart(@item.Product.Id)" value="@item.Quantity">
+                                    <div class="input-group-append">
+                                    <button class="btn btn-light" type="button" id="button-minus"> &minus; </button>
+                                    </div>
+                                    </div>*@
+                                            </td>
+                                            <td>
+                                                <div class="price-wrap">
+                                                    <var class="price">@Convert.ToDecimal(item.product.Discount).ToString("#,##")&nbsp;₫</var>
+                                                    <small class="text-muted" style="text-decoration: line-through;"> @Convert.ToDecimal(item.product.Price).ToString("#,##") đ</small>
+                                                </div> <!-- price-wrap .// -->
+                                            </td>
+                                            <td class="text-right">
+                                                <input type="hidden" value="@item.product.Id" id="productid" />
+                                                <a data-original-title="Save to Wishlist" title="" href="" class="btn btn-light" data-toggle="tooltip"> <i class="fa fa-heart"></i></a>
+
+                                                <a class="removecart btn btn-light btn-round" data-mahh="@item.product.Id"> Xóa</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>Không có sản phẩm trong giỏ hàng</p>
+                                }
+
+
+                            </tbody>
+                        </table>
+
+                        <div class="card-body border-top">
+                            <a href="@Url.Action("Index", "Payment")" class="btn btn-primary float-md-right"> Đặt hàng <i class="fa fa-chevron-right"></i> </a>
+                            <a href="#" class="btn btn-light"> <i class="fa fa-chevron-left"></i> Tiếp tục mua hàng </a>
+                        </div>
+                    </div> <!-- card.// -->
+
+                    <div class="alert alert-success mt-3">
+                        <p class="icontext"><i class="icon text-success fa fa-truck"></i> Giao hàng miễn phí trong vòng 1 tuần</p>
+                    </div>
+
+                </main> <!-- col.// -->
+                <aside class="col-md-3">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group">
+                                    <label>Nhập mã giảm giá</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="" placeholder="Nhập mã giảm">
+                                        <span class="input-group-append">
+                                            <button class="btn btn-primary">Áp dụng</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div> <!-- card-body.// -->
+                    </div>  <!-- card .// -->
+                    @{
+                        var price = Model.Sum(n => n.product.Price * n.amount);
+                        var toltalPrice = Model.Sum(n => n.product.Discount * n.amount);
+                        var discount = price - toltalPrice;
+                    }
+                    <div class="card">
+                        <div class="card-body">
+                            <dl class="dlist-align">
+                                <dt>Tiền hàng:</dt>
+                                <dd class="text-right">@Convert.ToDecimal(price).ToString("#,##") đ</dd>
+                            </dl>
+                            <dl class="dlist-align">
+                                <dt>Giảm giá:</dt>
+                                <dd class="text-right">-@Convert.ToDecimal(discount).ToString("#,##") đ</dd>
+                            </dl>
+                            <dl class="dlist-align">
+                                <dt>Tổng cộng:</dt>
+                                <dd class="text-right  h5"><strong>@Convert.ToDecimal(toltalPrice).ToString("#,##") đ</strong></dd>
+                            </dl>
+                            <hr>
+                            <p class="text-center mb-3">
+                                <img src="~/Content/images/misc/payments.png" height="26">
+                            </p>
+
+                        </div> <!-- card-body.// -->
+                    </div>  <!-- card .// -->
+                </aside> <!-- col.// -->
+            </div>
+
+        </div> <!-- container .//  -->
+    </section>
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+}
+else
+{
+    <h4 style="text-align: center; margin-top: 20px">Giỏ hàng của bạn đang trống</h4>
+}
+<!-- ========================= SECTION  ========================= -->
+<section class="section-name border-top padding-y">
+    <div class="container">
+        <h6>Chính sách thanh toán và hoàn tiền</h6>
+        <p>
+            Shope cung cấp nhiều hình thức thanh toán linh hoạt
+            giúp Quý khách có thể sử dụng dịch vụ một cách tiện ích nhất.
+            Bao gồm thẻ ví điện tử, thẻ ATM và tài khoản ngân hàng. <a href="" style=" color:#FFA500;">Xem chi tiết chính sách thanh toán</a>
+        </p>
+        <p>
+            Lỗi 1 đổi 1 hoặc hoàn tiền 80% giá trị hóa đơn trong vòng 30 ngày nếu có lỗi từ nhà sản xuất. <a href="" style=" color:#FFA500;">Xem chi tiết chính sách đổi trả và hoàn tiền</a>
+        </p>
+
+    </div><!-- container // -->
+</section>
+<!-- ========================= SECTION  END// ========================= -->
+@section Scripts{
+    <script>
+        $(function () {
+            function loadHeaderCart() {
+                //$('#miniCart').load("/AjaxContent/HeaderCart");
+                $('#numberCart').load("/AjaxContent/NumberCart");
+            }
+            $(".removecart").click(function () {
+                var productid = $(this).attr("data-mahh");
+                $.ajax({
+                    url: "Cart/Remove",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: { productID: productid },
+                    success: function (result) {
+                        if (result.success) {
+                            //loadHeaderCart();//Reload lai gio hang
+                            location.reload();
+                        }
+                    },
+                    error: function (rs) {
+                        alert("Remove Cart Error !")
+                    }
+                });
+            });
+            $(".cartItem").click(function () {
+                var productid = $(this).attr("data-mahh");
+                var soluong = parseInt($(this).val());
+                $.ajax({
+                    url: "Cart/UpdateCart",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        productID: productid,
+                        amount: soluong
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            //loadHeaderCart();//Reload lai gio hang
+                            window.location = 'Cart';
+                        }
+                    },
+                    error: function (rs) {
+                        alert("Cập nhật Cart Error !")
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
+@*<script type="text/javascript">
+    function UpdateCart(Id) {
+        var model = {};
+        //lấy id sản phẩm
+        model.Id = Id;
+        // lấy số lượng đặt hàng
+        model.Quantity = $("#ipQuantity" + "-" + Id).val();
+        model.Flag = 1;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AddToCart", "Cart")',
+            data: JSON.stringify(model),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function () {
+                alert("Thêm giỏ hàng thành công!")
+                $('#CartCount').text(@Session["count"] + 1);
+            },
+            error: function () {
+                alert("Lỗi trong khi thêm vào giỏ hàng!");
+            }
+        });
+        return false;
+    }
+
+    function DeleteCart(Id) {
+        var model = {};
+        //lấy id sản phẩm
+        model.Id = Id;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Remove", "Cart")',
+            data: JSON.stringify(model),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function () {
+                $('#CartCount').text(@Session["count"] - 1);
+                $("#product-" + model.Id).remove();
+                alert("Xóa giỏ hàng thành công!");
+            },
+            error: function () {
+                alert("Lỗi trong khi xóa giỏ hàng!");
+            }
+        });
+        return false;
+    }
+</script>
+*@

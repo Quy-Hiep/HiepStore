@@ -1,0 +1,202 @@
+﻿@using PagedList.Core.Mvc
+@model PagedList.Core.IPagedList<HiepStore.Models.Product>
+
+@{
+    ViewBag.Title = "ProductCategory";
+
+}
+
+@*<script type="text/javascript">
+    $(function () {
+        $("#addtocart").click(function () {
+            var model = {};
+            //lấy id sản phẩm
+            model.Id = @item.Id;
+            // lấy số lượng đặt hàng
+            model.Quantity = 1;
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToCart", "Cart")',
+                data:  JSON.stringify(model) ,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function () {
+                    alert("Thêm giỏ hàng thành công!")
+                    $('#CartCount').text(@Session["count"] + 1);
+                },
+                error: function () {
+                    alert("Lỗi trong khi thêm vào giỏ hàng!");
+                }
+            });
+            return false;
+        });
+    });
+</script>*@
+
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+    <div class="container">
+
+
+        <!-- ============================  FILTER TOP  ================================= -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <ol class="breadcrumb float-left">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Sản phẩm theo danh mục</li>
+                </ol>
+            </div> <!-- card-body .// -->
+        </div> <!-- card.// -->
+        <!-- ============================ FILTER TOP END.// ================================= -->
+
+
+        <div class="row">
+            <aside class="col-md-2">
+
+                <article class="filter-group">
+                    <h6 class="title">
+                        <a href="#" class="dropdown-toggle" data-toggle="collapse" data-target="#collapse_1">	Danh mục </a>
+                    </h6>
+                    <div class="filter-content collapse show" id="collapse_1">
+                        <div class="inner">
+                            <ul class="list-menu">
+                                @foreach (var item in ViewBag.Category)
+                                {
+                                    <li><a href="@Url.Action("ProductCategory", "Product", new {Id = item.Id})">@item.Name  </a></li>
+                                }
+
+
+                            </ul>
+                        </div> <!-- inner.// -->
+                    </div>
+                </article> <!-- filter-group  .// -->
+
+                <article class="filter-group">
+                    <h6 class="title">
+                        <a href="#" class="dropdown-toggle" data-toggle="collapse" data-target="#collapse_1">	Thương hiệu </a>
+                    </h6>
+                    <div class="filter-content collapse show" id="collapse_1">
+                        <div class="inner">
+                            <ul class="list-menu">
+                                @foreach (var item in ViewBag.Brand)
+                                {
+                                    <li><a href="@Url.Action("ProductBrand", "Product", new {Id = item.Id})">@item.Name  </a></li>
+                                }
+
+
+                            </ul>
+                        </div> <!-- inner.// -->
+                    </div>
+                </article> <!-- filter-group  .// -->
+
+            </aside> <!-- col.// -->
+            <main class="col-md-10">
+
+
+                <header class="mb-3">
+                    <div class="form-inline">
+                        <strong class="mr-md-auto">@ViewBag.Count sản phẩm được tìm thấy </strong>
+                        <select class="mr-2 form-control">
+                            <option>Mới nhất</option>
+                            <option>Xem nhiều</option>
+                            <option>Khuyến mãi hót</option>
+                            <option>Giá cao -> thấp</option>
+                            <option>Giá thấp -> cao</option>
+                            <option>Cấu hình</option>
+                        </select>
+                        <div class="btn-group">
+                            <a href="page-listing-grid.html" class="btn btn-light" data-toggle="tooltip" title="Xem danh sách">
+                                <i class="fa fa-bars"></i>
+                            </a>
+                            <a href="page-listing-large.html" class="btn btn-light active" data-toggle="tooltip" title="xem lưới">
+                                <i class="fa fa-th"></i>
+                            </a>
+                        </div>
+                    </div>
+                </header><!-- sect-heading -->
+                @foreach (var item in Model)
+                {
+                    <article class="card card-product-list">
+                        <div class="row no-gutters">
+                            <aside class="col-md-3">
+                                <a href="" class="img-wrap">
+                                    <span class="badge badge-danger"> NEW </span>
+                                    <img src="~/assets/images/products/@item.Thumb">
+                                </a>
+                            </aside> <!-- col.// -->
+                            <div class="col-md-6">
+                                <div class="info-main">
+                                    <a href="@Url.Action("Detail", "Product", new {Id = item.Id})" class="h5 title"> @item.Name</a>
+                                    <div class="rating-wrap mb-2">
+                                        <ul class="rating-stars">
+                                            <li style="width:100%" class="stars-active">
+                                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </li>
+                                        </ul>
+                                        <div class="label-rating">9/10</div>
+                                    </div> <!-- rating-wrap.// -->
+
+                                    <p class="mb-3">
+                                        <span class="tag"> <i class="fa fa-check"></i> Hàng chính hãng</span>
+                                        <span class="tag"> Bảo hành 18 tháng </span>
+                                        <span class="tag"> 80 nhận xét </span>
+                                    </p>
+
+                                    <p>
+                                        @item.ShortDesc
+                                    </p>
+
+                                </div> <!-- info-main.// -->
+                            </div> <!-- col.// -->
+                            <aside class="col-sm-3">
+                                <div class="info-aside">
+                                    <div class="price-wrap">
+                                        <span class="h5 price text-muted" style="text-decoration: line-through;">@Convert.ToDecimal(item.Price).ToString("#,##") đ</span>
+                                        <br />
+                                        <span class="h5 price">@Convert.ToDecimal(item.Discount).ToString("#,##") đ</span>
+                                    </div> <!-- price-wrap.// -->
+                                    <small class="text-warning">Hỗ trợ ship COD</small>
+                                    @*<p class="mt-3">
+                                <a href="#" id="addtocart" class="btn btn-outline-primary"> <i class="fa fa-envelope"></i> Thêm vào giỏ hàng </a>
+                                </p>*@
+                                    <p class="mt-3">
+                                        <a href="@Url.Action("Detail", "Product", new {Id = item.Id})" class="btn btn-outline-primary"> <i class="fa fa-envelope"></i> Xem chi tiết </a>
+                                    </p>
+
+
+
+                                </div> <!-- info-aside.// -->
+                            </aside> <!-- col.// -->
+                        </div> <!-- row.// -->
+                    </article> <!-- card-product .// -->
+                }
+
+                <nav class="mb-4" aria-label="Page navigation sample">
+                    Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) của @Model.PageCount
+                    <pager class="pager-container" list="@Model" options="@PagedListRenderOptions.Bootstrap4PageNumbersPlusPrevAndNext" asp-controller="Product" asp-action="ProductCategory" />
+                </nav>
+
+
+                <div class="box text-center">
+                    <p>Bạn có tìm được sản phẩm mình mong muốn?</p>
+                    <a href="" class="btn btn-light">Yes</a>
+                    <a href="" class="btn btn-light">No</a>
+                </div>
+
+
+            </main> <!-- col.// -->
+
+        </div>
+
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->

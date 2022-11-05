@@ -1,0 +1,258 @@
+﻿@model HiepStore.Models.Product
+@{
+    ViewBag.Title = "Detail";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<section class="py-3 bg-light">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("ProductCategory", "Category")/@Model.CategoryId">chi tiết sản phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </div>
+</section>
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content bg-white padding-y">
+    <div class="container">
+        <!-- ============================ ITEM DETAIL ======================== -->
+        <div class="row">
+            <aside class="col-md-6">
+                <div class="card">
+                    <article class="gallery-wrap">
+                        <div class="img-big-wrap">
+                            <div> <a href="#"><img src="~/assets/images/products/@Model.Thumb"></a></div>
+                        </div> <!-- slider-product.// -->
+                        <div class="thumbs-wrap">
+                            <a href="#" class="item-thumb"> <img src="~/Content/images/items/15.jpg"></a>
+                            <a href="#" class="item-thumb"> <img src="~/Content/images/items/15-1.jpg"></a>
+                            <a href="#" class="item-thumb"> <img src="~/Content/images/items/15-2.jpg"></a>
+                            <a href="#" class="item-thumb"> <img src="~/Content/images/items/15-1.jpg"></a>
+                        </div> <!-- slider-nav.// -->
+                    </article> <!-- gallery-wrap .end// -->
+                </div> <!-- card.// -->
+            </aside>
+            <main class="col-md-6">
+                <article class="product-info-aside">
+                    <h2 class="title mt-3">@Model.Name </h2>
+                    <div class="rating-wrap my-3">
+                        <ul class="rating-stars">
+                            <li style="width:80%" class="stars-active">
+                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </li>
+                            <li>
+                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </li>
+                        </ul>
+                        <small class="label-rating text-muted">132 đánh giá</small>
+                        <small class="label-rating text-success"> <i class="fa fa-clipboard-check"></i> 154 lượt đặt hàng </small>
+                    </div> <!-- rating-wrap.// -->
+                    <div class="mb-3">
+                        <span class="h5 price text-muted" style="text-decoration: line-through;">@Convert.ToDecimal(Model.Price).ToString("#,##") đ</span>
+                        <span class="h4 price">@Convert.ToDecimal(Model.Discount).ToString("#,##") đ</span>
+                    </div> <!-- price-detail-wrap .// -->
+                    <p>
+                        @Model.ShortDesc
+                    </p>
+                    <dl class="row">
+                        <dt class="col-sm-3">Thương hiệu</dt>
+                        <dd class="col-sm-9"><a href="@Url.Action("ProductBrand", "Brand", new {Id = Model.BrandId})">@Model.BrandId</a></dd>
+                        <dt class="col-sm-3">Sản xuất tại</dt>
+                        <dd class="col-sm-9">Việt Nam</dd>
+                        <dt class="col-sm-3">Bảo hành</dt>
+                        <dd class="col-sm-9">18 tháng</dd>
+                        <dt class="col-sm-3">Thời gian giao hàng</dt>
+                        <dd class="col-sm-9">2-3 ngày</dd>
+                        <dt class="col-sm-3">Tình trạng</dt>
+                        <dd class="col-sm-9">Còn hàng</dd>
+                    </dl>
+                    <div class="form-row  mt-4">
+                        <div class="form-group col-md flex-grow-0">
+                            <div class="input-group mb-3 input-spinner">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-light" type="button" id="button-plus"> + </button>
+                                </div>
+                                <input type="text" id="txtsoLuong" class="form-control" value="1">
+                                <div class="input-group-append">
+                                    <button class="btn btn-light" type="button" id="button-minus"> &minus; </button>
+                                </div>
+                            </div>
+                        </div> <!-- col.// -->
+                        <div class="form-group col-md add-to-cart">
+                            <a href="javascript:void(0)" class="btn  btn-primary">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="text">Thêm vào giỏ hàng</span>
+                            </a>
+                            <input hidden asp-for="Id" />
+                        </div> <!-- col.// -->
+                    </div> <!-- row.// -->
+                </article> <!-- product-info-aside .// -->
+            </main> <!-- col.// -->
+        </div> <!-- row.// -->
+        <!-- ================ ITEM DETAIL END .// ================= -->
+
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+<!-- ========================= SECTION  ========================= -->
+<section class="section-name padding-y bg">
+    <div class="container">
+        <div class="row">
+            <div style="text-align: center" class="col-md-8">
+                <h5 style="text-align:center" class="title-description">ĐẶC ĐIỂM NỔI BẬT</h5>
+                @Html.Raw(Model.Description)
+            </div> <!-- col.// -->
+
+            <aside class="col-md-4">
+                <div class="box">
+
+                    <h5 class="title-description">Các Video về sản phẩm này</h5>
+                    <article class="media mb-3">
+                        <a href="#"><img class="img-sm mr-3" src="~/assets/images/products/@Model.Thumb"></a>
+                        <div class="media-body">
+                            <h6 class="mt-0"><a href="#">Trên tay iphone 13 pro</a></h6>
+                            <p class="mb-2"> Cụm camera được nâng cấp, màu sắc mới, đặc biệt là màn hình 120Hz với phần notch được làm nhỏ gọn hơn chính là những điểm làm cho thu hút mọi sự chú ý trong năm nay. </p>
+                        </div>
+                    </article>
+                    <article class="media mb-3">
+                        <a href="#"><img class="img-sm mr-3" src="~/assets/images/products/@Model.Thumb"></a>
+                        <div class="media-body">
+                            <h6 class="mt-0"><a href="#">Đánh giá chi tiết iphone 13 pro sau 2 tuần</a></h6>
+                            <p class="mb-2"> Hiệu năng iPhone 13 Pro vẫn đứng hàng đầu trong thế giới smartphone · Màn hình: Kích thước 6.1 inch, độ phân giải 2.532 x 1.170 pixel, tấm nền Super Retina XDR </p>
+                        </div>
+                    </article>
+                    <article class="media mb-3">
+                        <a href="#"><img class="img-sm mr-3" src="~/assets/images/products/@Model.Thumb"></a>
+                        <div class="media-body">
+                            <h6 class="mt-0"><a href="#">drop test iphone 13 pro</a></h6>
+                            <p class="mb-2"> Đối với iPhone 13 Pro, chiếc điện thoại này không chỉ va vào lan can không chỉ một mà tới ba lần. Điều gây ngạc nhiên là mặt kính phía sau của iPhone đã bị nứt nhưng mặt trước không bị hề hấn gì.  </p>
+                        </div>
+                    </article>
+
+
+                </div> <!-- box.// -->
+            </aside> <!-- col.// -->
+        </div> <!-- row.// -->
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $(function () {
+                $(".add-to-cart").click(function () {
+                    var productid = $('#Id').val();
+                    var soLuong = $('#txtsoLuong').val();
+                    $.ajax({
+                        url: '/cart/addtocart',
+                        type: "POST",
+                        dataType: "JSON",
+                        data: {
+                            productID: productid,
+                            amount: soLuong
+                        },
+                        success: function (response) {
+                            if (response.result == 'Redirect') {
+                                window.location = response.url;
+                            }
+                            else {
+                                //loadHeaderCart(); //Add Product success
+                                location.reload();
+                            }
+                            console.log(response); // log to the console to see whether it worked
+                        },
+                        error: function (error) {
+                            alert("Lỗi đưa dữ liệu lên  server: " + error.responseText);
+                        }
+                    });
+                });
+
+        @*$(".removecart").click(function () {
+                var productid = $(this).attr("data-productid");
+                $.ajax({
+                url: "api/cart/remove",
+                type: "POST",
+                dataType: "JSON",
+                data: { productID: productid },
+                success: function (result) {
+                if (result.success) {
+                loadHeaderCart();//Reload lai gio hang
+                location.reload();
+                }
+                },
+                error: function (rs) {
+                alert("Remove Cart Error !")
+                }
+                });
+                });*@
+                });
+            function loadHeaderCart() {
+                //$('#miniCart').load("/AjaxContent/HeaderCart");
+                $('#numberCart').load("/AjaxContent/NumberCart");
+            }
+        });
+    </script>
+
+}
+
+
+
+
+
+<script type="text/javascript">
+    $(function () {
+        //$("#addtocart").click(function () {
+        //    var model = {};
+        //    //lấy id sản phẩm
+        //    model.Id = @Model.Id;
+        //    // lấy số lượng đặt hàng
+        //    model.Quantity = $("#ipQuantity").val();
+        //    debugger;
+        //    $.ajax({
+        //        type: "POST",
+        //        url: '@Url.Action("AddToCart", "Cart")',
+        //        data: JSON.stringify(model),
+        //        dataType: "json",
+        //        contentType: "application/json; charset=utf-8",
+        //        success: function () {
+        //            alert("Thêm giỏ hàng thành công!")
+        //            $('#CartCount').text(Session["count"] + 1);
+        //        },
+        //        error: function () {
+        //            alert("Lỗi trong khi thêm vào giỏ hàng!");
+        //        }
+        //    });
+        //    return false;
+        //});
+        var count = 1;
+        $("#button-plus").click(function () {
+                if ($("#txtsoLuong").val() >= 20) {
+                $("#button-plus").attr("disabled", true);
+            } else {
+                count += 1;
+                    $("#txtsoLuong").val(count);
+            }
+        });
+        $("#button-minus").click(function () {
+                if ($("#txtsoLuong").val() <= 1) {
+                $("#button-minus").attr("disabled", true);
+            } else {
+                count -= 1;
+                    $("#txtsoLuong").val(count);
+            }
+        });
+            $("#txtsoLuong").change(function () {
+                if ($("#txtsoLuong").val() <= 1 || $("#txtsoLuong").val() >= 20) {
+                alert("Nhập số lượng phù hợp !");
+                    $("#txtsoLuong").val("1");
+            }
+        })
+    });
+</script>

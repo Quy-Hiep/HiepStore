@@ -1,0 +1,200 @@
+﻿@model HiepStore.Models.Product
+
+@{
+    ViewData["Title"] = "Thông tin sản phẩm" + Model.Name;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <a asp-area="Admin" asp-controller="AdminProducts" asp-action="Index" class="breadcrumb-item">Danh sách sản phẩm</a>
+            <span class="breadcrumb-item active">Thông tin sản phẩm : @Model.Name</span>
+        </nav>
+    </div>
+</div>
+
+<div class="card-body">
+    <h4 class="text-center">Chi tiết sản phẩm : @Model.Name</h4>
+    <div class="row m-t-50">
+        <div class="col md-6">
+            <img style="max-width: 70%" class="img-responsive mx-auto d-block" src="~/assets/images/products/@Model.Thumb" alt="@Model.Title" />
+            <span class="text-center d-block mt-4">@Model.Thumb</span>
+            <h5 class="text-center m-t-50 font text-secondary">Trạng thái</h5>
+            <div class="table-responsive">
+                <table class="product-info-table m-t-10">
+                    <tbody >
+                        <tr>
+                            <td>Hiển thị trang chủ</td>
+                            <td class="text-right">
+                                @if (Model.IsShowOnHomePage)
+                                {
+                                    <div class="switch m-r-30">
+                                        <input type="checkbox" id="switch-1" checked="" disabled />
+                                        <label for="switch-1"></label>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="switch m-r-30">
+                                        <input type="checkbox" id="switch-1" disabled />
+                                        <label for="switch-1"></label>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Kích hoạt</td>
+                            <td class="text-right">
+                                @if (Model.IsActive)
+                                {
+                                    <div class="switch m-r-30">
+                                        <input type="checkbox" id="switch-1" checked="" disabled />
+                                        <label for="switch-1"></label>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="switch m-r-30">
+                                        <input type="checkbox" id="switch-1" disabled />
+                                        <label for="switch-1"></label>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Đưa vào thùng rác</td>
+                            <td class="text-right">
+                                @if (Model.IsDeleted)
+                                {
+                                    <div class="switch m-r-30">
+                                        <input type="checkbox" id="switch-1" checked="" disabled />
+                                        <label for="switch-1"></label>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="switch m-r-30">
+                                        <input type="checkbox" id="switch-1" disabled />
+                                        <label for="switch-1"></label>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h5 class="text-center m-t-30 font text-secondary">SEO</h5>
+            <div class="table-responsive">
+                <table class="product-info-table">
+                    <tbody >
+                        <tr>
+                            <td>Tiêu đề:</td>
+                            <td>@Model.Title</td>
+                        </tr>
+                        <tr>
+                            <td>Alias:</td>
+                            <td>@Model.Alias</td>
+                        </tr>
+                        <tr>
+                            <td>MetaDesc:</td>
+                            <td>@Model.MetaDesc</td>
+                        </tr>
+                        <tr>
+                            <td>MetaKey:</td>
+                            <td>@Model.MetaKey</td>
+                        </tr>
+                        <tr>
+                            <td>Tags:</td>
+                            <td>@Model.Tags</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col md-6">
+            <div class="table-responsive">
+                <table class="product-info-table m-t-20">
+                    <tbody>
+                        <tr>
+                            <td>Mã sản phẩm:</td>
+                            <td class="text-dark font-weight-semibold">@Model.Id</td>
+                        </tr>
+                        <tr>
+                            <td>Tên sản phẩm:</td>
+                            <td>@Model.Name</td>
+                        </tr>
+                        <tr>
+                            <td>Mô tả ngắn:</td>
+                            <td>@Model.ShortDesc</td>
+                        </tr>
+                        <tr>
+                            <td>Giá:</td>
+                            <td>@Model.Price</td>
+                        </tr>
+                        <tr>
+                            <td>Giá giảm:</td>
+                            <td>@Model.Discount</td>
+                        </tr>
+                        <tr>
+                            <td>Tồn kho:</td>
+                            <td>@Model.UnitsInStock</td>
+                        </tr>
+                        <tr>
+                            <td>Danh mục:</td>
+                            <td>@Model.Category.Name</td>
+                        </tr>
+                        <tr>
+                            <td>Thương hiệu:</td>
+                            <td>@Model.Brand.Name</td>
+                        </tr>
+                        <tr>
+                            <td>Loại sản phẩm:</td>
+                            <td>@Model.TypeId</td>
+                        </tr>
+                        <tr>
+                            <td>Hình ảnh</td>
+                            <td>@Model.Thumb</td>
+                        </tr>
+                        <tr>
+                            <td>video:</td>
+                            <td>@Model.Video</td>
+                        </tr>
+                        <tr>
+                            <td>Sắp xếp:</td>
+                            <td>@Model.Ordering</td>
+                        </tr>
+
+                        <tr>
+                            <td>Ngày tạo:</td>
+                            <td>@Model.CreatedAt</td>
+                        </tr>
+                        <tr>
+                            <td>Ngày chỉnh sửa</td>
+                            <td>@Model.UpdatedAt</td>
+                        </tr>
+                        <tr>
+                            <td>Người tạo:</td>
+                            <td>@Model.UserCreated</td>
+                        </tr>
+                        <tr>
+                            <td>Người chỉnh sửa</td>
+                            <td>@Model.UserUpdated</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mx-md-5">
+    <h4 class="card-header text-center">
+        Mô tả chi tiết
+    </h4>
+    <div class="card-body">
+        <p class="card-text">@Html.Raw(Model.Description)</p>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+﻿@model List<HiepStore.ModelViews.CartItem>
+@if (Model != null && Model.Count() > 0)
+{
+    <span class="notify">@Model.Count()</span>
+}
+else
+{
+    <span class="notify">0</span>
+}

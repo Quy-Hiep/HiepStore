@@ -1,0 +1,311 @@
+﻿@model HiepStore.Models.Customer
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Order> DanhSachDonHang = ViewBag.DonHang;
+    var total = DanhSachDonHang.Sum(x => x.TotalMoney).ToString("#,##0");
+    HiepStore.ModelViews.ChangePasswordViewModel changePassword = new HiepStore.ModelViews.ChangePasswordViewModel();
+}
+<style type="text/css">
+    /*  15. My Account
+    /*----------------------------------------*/
+    .myaccount-tab-trigger {
+        display: block;
+    }
+
+        .myaccount-tab-trigger li {
+            display: block;
+        }
+
+            .myaccount-tab-trigger li:first-child {
+                margin-top: -1px;
+            }
+
+            .myaccount-tab-trigger li a {
+                border: 1px solid #444444;
+                display: block;
+                background: #010101;
+                color: #fff;
+                text-transform: uppercase;
+                font-weight: 600;
+                padding: 10px 20px;
+            }
+
+                .myaccount-tab-trigger li a.active {
+                    background: #bac34e;
+                    border-color: #bac34e;
+                    color: #fff;
+                }
+
+                    .myaccount-tab-trigger li a.active:hover {
+                        color: #fff;
+                    }
+
+                .myaccount-tab-trigger li a:hover {
+                    color: #bac34e;
+                }
+
+    .myaccount-tab-content {
+        border: 1px solid #dee2e6;
+        padding: 30px;
+        -webkit-transition: all 0.3s ease 0s;
+        -o-transition: all 0.3s ease 0s;
+        transition: all 0.3s ease 0s;
+    }
+
+    .myaccount-dashboard p {
+        margin-bottom: 20px;
+    }
+
+        .myaccount-dashboard p:last-child {
+            margin-bottom: 0;
+        }
+
+    .myaccount-orders .table {
+        margin-bottom: 0;
+    }
+
+        .myaccount-orders .table .account-order-id:hover {
+            color: #bac34e;
+        }
+
+        .myaccount-orders .table.table-hover tbody tr:hover {
+            --bs-table-accent-bg: rgba(0, 0, 0, .02);
+            color: var(--bs-table-hover-color);
+        }
+
+        .myaccount-orders .table td,
+        .myaccount-orders .table th {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+    .myaccount-orders .small-title {
+        margin-bottom: 15px;
+    }
+
+    /* ---My Account Form Style--- */
+    .myaccount-form,
+    .myaccount-form-boxed {
+        padding: 30px;
+        border-radius: 0;
+        border: 1px solid #dee2e6;
+    }
+
+
+        .myaccount-form .myaccount-form-inner,
+        .myaccount-form-boxed .myaccount-form-inner {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-flex-wrap: wrap;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            -webkit-box-pack: justify;
+            -webkit-justify-content: space-between;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            margin-top: -20px;
+        }
+
+
+            .myaccount-form .myaccount-form-inner .single-input,
+            .myaccount-form-boxed .myaccount-form-inner .single-input {
+                -webkit-box-flex: 0;
+                -webkit-flex: 0 0 100%;
+                -ms-flex: 0 0 100%;
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-top: 20px;
+            }
+
+                .myaccount-form .myaccount-form-inner .single-input.single-input-half,
+                .myaccount-form-boxed .myaccount-form-inner .single-input.single-input-half {
+                    -webkit-box-flex: 0;
+                    -webkit-flex: 0 0 calc(50% - 15px);
+                    -ms-flex: 0 0 calc(50% - 15px);
+                    flex: 0 0 calc(50% - 15px);
+                    max-width: calc(50% - 15px);
+                }
+
+
+                .myaccount-form .myaccount-form-inner .single-input label,
+                .myaccount-form-boxed .myaccount-form-inner .single-input label {
+                    margin-bottom: 8px;
+                    display: block;
+                }
+
+                .myaccount-form .myaccount-form-inner .single-input input,
+                .myaccount-form .myaccount-form-inner .single-input select,
+                .myaccount-form .myaccount-form-inner .single-input textarea,
+                .myaccount-form-boxed .myaccount-form-inner .single-input input,
+                .myaccount-form-boxed .myaccount-form-inner .single-input select,
+                .myaccount-form-boxed .myaccount-form-inner .single-input textarea {
+                    padding: 0 15px;
+                    border: 1px solid #dee2e6;
+                    height: 40px;
+                    width: 100%;
+                }
+
+                    .myaccount-form .myaccount-form-inner .single-input input:first-child,
+                    .myaccount-form-boxed .myaccount-form-inner .single-input input:first-child {
+                        margin-top: 20px;
+                    }
+
+                .myaccount-form .myaccount-form-inner .single-input .checkbox-input,
+                .myaccount-form-boxed .myaccount-form-inner .single-input .checkbox-input {
+                    display: inline-block;
+                }
+
+                    .myaccount-form .myaccount-form-inner .single-input .checkbox-input label,
+                    .myaccount-form-boxed .myaccount-form-inner .single-input .checkbox-input label {
+                        display: inline-block;
+                    }
+
+            .myaccount-form .myaccount-form-inner a,
+            .myaccount-form-boxed .myaccount-form-inner a {
+                font-size: 13px;
+            }
+
+                .myaccount-form .myaccount-form-inner a:hover,
+                .myaccount-form-boxed .myaccount-form-inner a:hover {
+                    color: #bac34e;
+                }
+
+    /*----------------------------------------*/
+
+</style>
+<main class="main-content">
+    <div class="account-page-area section-space-y-axis-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <ul class="nav myaccount-tab-trigger" id="account-page-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="account-dashboard-tab" data-bs-toggle="tab" href="#account-dashboard" role="tab" aria-controls="account-dashboard" aria-selected="true">Thông tin tài khoản</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="account-orders-tab" data-bs-toggle="tab" href="#account-orders" role="tab" aria-controls="account-orders" aria-selected="false">Danh sách đơn hàng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="account-details-tab" data-bs-toggle="tab" href="#account-details" role="tab" aria-controls="account-details" aria-selected="false">Thay đổi mật khẩu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="account-logout-tab" href="@Url.Action("Logout","Accounts")" role="tab" aria-selected="false">Đăng xuất</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-9">
+                    <div class="tab-content myaccount-tab-content" id="account-page-tab-content">
+                        <div class="tab-pane fade show active" id="account-dashboard" role="tabpanel" aria-labelledby="account-dashboard-tab">
+                            <div class="myaccount-dashboard">
+                                <p>
+                                    Xin chào, <b>@Model.FirstName</b>
+                                </p>
+                                <p>Email: @Model.Email</p>
+                                <p>Số điện thoại: @Model.Phone</p>
+                                <p>Địa chỉ: @Model.Address</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="account-orders" role="tabpanel" aria-labelledby="account-orders-tab">
+                            <div class="myaccount-orders">
+                                <h4 class="small-title">DANH SÁCH ĐƠN HÀNG</h4>
+                                @if (DanhSachDonHang != null && DanhSachDonHang.Count() > 0)
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Ngày mua hàng</th>
+                                                    <th>Ngày ship hàng</th>
+                                                    <th>Trạng thái</th>
+                                                </tr>
+                                                @foreach (var item in DanhSachDonHang)
+                                                {
+                                                    <tr>
+                                                        <td><a class="account-order-id" href="javascript:void(0)">#@item.Id</a></td>
+                                                        <td>@item.OrderDate</td>
+                                                        <td>@item.ShipAt</td>
+                                                        <td>@item.TransactStatus.Status</td>
+                                                        <td>
+                                                            <a href="javascript:void(0)" class="xemdonhang" data-madonhang="@item.Id">Xem đơn hàng</a>
+                                                        </td>
+                                                    </tr>
+                                                }
+
+
+                                            </tbody>
+                                        </table>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <hr />
+                                        <div id="records_table">
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p>Chưa có đơn hàng!</p>
+                                }
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="account-address" role="tabpanel" aria-labelledby="account-address-tab">
+                            <div class="myaccount-address">
+                                <p>The following addresses will be used on the checkout page by default.</p>
+                                <div class="row">
+                                    <div class="col">
+                                        <h4 class="small-title">BILLING ADDRESS</h4>
+                                        <address>
+                                            @Model.Address
+                                        </address>
+                                    </div>
+                                    <div class="col">
+                                        <h4 class="small-title">SHIPPING ADDRESS</h4>
+                                        <address>
+                                            @Model.Address
+                                        </address>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="account-details" role="tabpanel" aria-labelledby="account-details-tab">
+                            @await Html.PartialAsync("_ChangePasswordPartialView", changePassword)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Bootstrap5 CDN JavaScript Bundle with Popper-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $(".xemdonhang").click(function () {
+                var madonhang = $(this).attr("data-madonhang")
+                $.ajax({
+                    url: '/DonHang/Details',
+                    datatype: "json",
+                    type: "POST",
+                    data: { id: madonhang },
+                    async: true,
+                    success: function (results) {
+                        $("#records_table").html("");
+                        $("#records_table").html(results);
+                    },
+                    error: function (xhr) {
+                        alert('error');
+                    }
+                });
+            });
+        });
+    </script>
+}

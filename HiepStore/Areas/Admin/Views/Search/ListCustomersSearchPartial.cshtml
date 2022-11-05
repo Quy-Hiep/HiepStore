@@ -1,0 +1,35 @@
+﻿@model List<Customer>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <tr>
+
+
+            <td>
+                @item.Id
+            </td>
+
+            <td>
+                <a href="@Url.Action("Details","AdminProducts", new { id = item.Id })">
+                    <div class="d-flex align-items-center text-wrap" style="max-width: 200px">
+                        <img class="img-fluid rounded" src="~/assets/images/products/@item.Avatar" style="max-width: 60px" alt="Ảnh đại diện" />
+                        <h6 class="m-b-0 m-l-10">@item.LastName</h6>
+                    </div>
+                </a>
+
+            </td>
+            <td>@item.FirstName</td>
+            <td>@item.Email</td>
+            <td>@item.Phone</td>
+            <td>@item.LocationId</td>
+            <td>@item.LastLogin</td>
+
+            <td>
+                <a type="button" class="btn btn-primary btn-tone m-r-5" asp-area="Admin" asp-controller="AdminCustomers" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a>
+                <a type="button" class="btn btn-secondary btn-tone m-r-5" asp-area="Admin" asp-controller="AdminCustomers" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                <a type="button" class="btn btn-success btn-tone m-r-5" asp-area="Admin" asp-controller="AdminCustomers" asp-action="DeleteTrash" asp-route-id="@item.Id">Xóa</a>
+            </td>
+        </tr>
+    }
+}
