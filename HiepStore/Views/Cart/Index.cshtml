@@ -6,10 +6,10 @@
 }
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<h2 style="text-align: center; margin-bottom: -20px; margin-top: 10px">Quản lý giỏ hàng</h2>
-@if (Model != null)
+@if (Model != null && Model.Count() > 0)
 {
     <!-- ========================= SECTION CONTENT ========================= -->
+    <h2 style="text-align: center; margin-bottom: -20px; margin-top: 10px">Giỏ hàng của bạn</h2>
     <section class="section-content padding-y">
         <div class="container">
             <div class="row">
@@ -40,41 +40,27 @@
                                                 </figure>
                                             </td>
                                             <td>
-                                                <input type="number" class="cartItem" data-mahh="@item.product.Id" value="@item.amount" />
-                                                @*<script>
-                                    var count = 1;
-                                    $("#button-plus").click(function () {
-                                    if ($("#ipQuantity-@item.Product.Id").val() >= 20) {
-                                    $("#button-plus").attr("disabled", true);
-                                    } else {
-                                    count += 1;
-                                    $("#ipQuantity-@item.Product.Id").val(count);
-                                    }
-                                    });
-                                    $("#button-minus").click(function () {
-                                    if ($("#ipQuantity-@item.Product.Id").val() <= 1) {
-                                    $("#button-minus").attr("disabled", true);
-                                    } else {
-                                    count -= 1;
-                                    $("#ipQuantity-@item.Product.Id").val(count);
-                                    }
-                                    });
-                                    $("#ipQuantity").change(function () {
-                                    if ($("#ipQuantity-@item.Product.Id").val() <= 1 || $("#ipQuantity-@item.Product.Id").val() >= 20) {
-                                    alert("Nhập số lượng phù hợp !");
-                                    $("#ipQuantity-@item.Product.Id").val("1");
-                                    }
-                                    })
-                                    </script>
-                                    <div class="input-group mb-3 input-spinner">
-                                    <div class="input-group-prepend">
-                                    <button class="btn btn-light" type="button" id="button-plus"> + </button>
-                                    </div>
-                                    <input type="text" id="ipQuantity-@item.Product.Id" class="form-control" onchange="UpdateCart(@item.Product.Id)" value="@item.Quantity">
-                                    <div class="input-group-append">
-                                    <button class="btn btn-light" type="button" id="button-minus"> &minus; </button>
-                                    </div>
-                                    </div>*@
+                                                <input type="number" class="cartItem form-control" data-mahh="@item.product.Id" value="@item.amount" min="1" max="10">
+
+                                                <!--<div class="input-group mb-3 input-spinner">
+                                                    <div class="input-group-prepend">
+                                                        <button class="btn btn-light" type="button" id="button-plus"> + </button>
+                                                    </div>
+                                                    <div style="max-width:100px;" class="py-1">
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-light" type="button" id="button-minus"> &minus; </button>
+                                                    </div>
+                                                </div>-->
+                                                <!--<script>
+                                                    $('#button-plus, #button-minus').on('click', function (e) {
+                                                        const isNegative = $(e.target).closest('#button-minus').is('#button-minus');
+                                                        const input = $(e.target).closest('.input-group').find('input');
+                                                        if (input.is('input')) {
+                                                            input[0][isNegative ? 'stepDown' : 'stepUp']()
+                                                        }
+                                                    })
+                                                </script>-->
                                             </td>
                                             <td>
                                                 <div class="price-wrap">
@@ -101,7 +87,7 @@
                         </table>
 
                         <div class="card-body border-top">
-                            <a href="@Url.Action("Index", "Payment")" class="btn btn-primary float-md-right"> Đặt hàng <i class="fa fa-chevron-right"></i> </a>
+                            <a href="@Url.Action("Index", "Checkout")" class="btn btn-primary float-md-right"> Đặt hàng <i class="fa fa-chevron-right"></i> </a>
                             <a href="#" class="btn btn-light"> <i class="fa fa-chevron-left"></i> Tiếp tục mua hàng </a>
                         </div>
                     </div> <!-- card.// -->
@@ -162,24 +148,21 @@
 }
 else
 {
-    <h4 style="text-align: center; margin-top: 20px">Giỏ hàng của bạn đang trống</h4>
-}
-<!-- ========================= SECTION  ========================= -->
-<section class="section-name border-top padding-y">
-    <div class="container">
-        <h6>Chính sách thanh toán và hoàn tiền</h6>
-        <p>
-            Shope cung cấp nhiều hình thức thanh toán linh hoạt
-            giúp Quý khách có thể sử dụng dịch vụ một cách tiện ích nhất.
-            Bao gồm thẻ ví điện tử, thẻ ATM và tài khoản ngân hàng. <a href="" style=" color:#FFA500;">Xem chi tiết chính sách thanh toán</a>
-        </p>
-        <p>
-            Lỗi 1 đổi 1 hoặc hoàn tiền 80% giá trị hóa đơn trong vòng 30 ngày nếu có lỗi từ nhà sản xuất. <a href="" style=" color:#FFA500;">Xem chi tiết chính sách đổi trả và hoàn tiền</a>
-        </p>
+    <div class="text-center my-5">
+        <img src="/assets/images/cart/empty-cart.jpg">
+    </div>
+    <div class="text-center mb-5">
+        <a asp-action="index" asp-controller="home" class="btn btn-warning" type="button">Tiếp tục Mua sắm</a>
 
-    </div><!-- container // -->
-</section>
-<!-- ========================= SECTION  END// ========================= -->
+        <br><br><br><br><br>
+        
+    </div>
+}
+
+
+
+
+
 @section Scripts{
     <script>
         $(function () {
@@ -201,7 +184,7 @@ else
                         }
                     },
                     error: function (rs) {
-                        alert("Remove Cart Error !")
+                        alert("Xóa giỏ hàng lỗi !")
                     }
                 });
             });
@@ -219,17 +202,24 @@ else
                     success: function (result) {
                         if (result.success) {
                             //loadHeaderCart();//Reload lai gio hang
+                            alert("thêm số lượng thành công");
                             window.location = 'Cart';
                         }
                     },
                     error: function (rs) {
-                        alert("Cập nhật Cart Error !")
+                        alert("Lỗi cập nhật giỏ hàng!")
                     }
                 });
             });
         });
     </script>
 }
+
+
+
+
+
+
 
 
 @*<script type="text/javascript">

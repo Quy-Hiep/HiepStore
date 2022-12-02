@@ -5,25 +5,26 @@
                 <aside class="col-md col-6">
                     <h6 class="title">Thương hiệu</h6>
                     <ul class="list-unstyled">
-                        <li> <a href="@Url.Action("ProductBrand","Brand")/1">Apple</a></li>
-                        <li> <a href="@Url.Action("ProductBrand","Brand")/2">Samsung</a></li>
-                        <li> <a href="@Url.Action("ProductBrand","Brand")/3">Xiaomi</a></li>
-                        <li> <a href="@Url.Action("ProductBrand","Brand")/4">Huawei</a></li>
-                        <li> <a href="@Url.Action("Index","Brand")">Tất cả thương hiệu</a></li>
+                        <li> <a href="/thuonghieu/apple">Apple</a></li>
+                        <li> <a href="/thuonghieu/samsung">Samsung</a></li>
+                        <li> <a href="/thuonghieu/xiaomi">Xiaomi</a></li>
+                        <li> <a href="/thuonghieu/huawei">Huawei</a></li>
+                        <li> <a asp-controller="Brand" asp-action="Index">Tất cả thương hiệu</a></li>
                     </ul>
                 </aside>
                 <aside class="col-md col-6">
                     <h6 class="title">Công ty</h6>
                     <ul class="list-unstyled">
-                        <li> <a href="@Url.Action("About","Home")">Về chúng tôi</a></li>
-                        <li> <a href="#">Tìm kiếm cửa hàng offline</a></li>
-                        <li> <a href="#">Điều khoản</a></li>
+                        <li> <a href="/page/ve-chung-toi">Về chúng tôi</a></li>
+                        <li> <a href="/page/tim-kiem-cua-hang">Tìm kiếm cửa hàng offline</a></li>
+                        <li> <a href="/page/dieu-khoan">Điều khoản</a></li>
+                        <li> <a href="/page/chinh-sach-bao-nat">Điều khoản</a></li>
                     </ul>
                 </aside>
                 <aside class="col-md col-6">
                     <h6 class="title">Trợ giúp</h6>
                     <ul class="list-unstyled">
-                        <li> <a href="@Url.Action("Contact","Home")">Cộng tác với chúng tôi</a></li>
+                        <li> <a href="/page/cong-tac">Cộng tác với chúng tôi</a></li>
                         <li> <a href="#">Phương thức thanh toán</a></li>
                         <li> <a href="#">Trạng thái đơn hàng</a></li>
                         <li> <a asp-area="Admin" asp-controller="Home" asp-action="Index">Trang quản trị</a></li>
@@ -32,19 +33,19 @@
                 <aside class="col-md col-6">
                     <h6 class="title">Tài khoản</h6>
                     <ul class="list-unstyled">
-                        <li> <a href="#"> Đăng nhập </a></li>
-                        <li> <a href="#"> Đăng kí </a></li>
-                        <li> <a href="#"> Cài đặt tài khoản </a></li>
-                        <li> <a href="#"> Đơn hàng của tôi </a></li>
+                        <li> <a asp-action="Login" asp-controller="Accounts"> Đăng nhập </a></li>
+                        <li> <a asp-action="register" asp-controller="Accounts"> Đăng kí </a></li>
+                        <li> <a asp-action="Dashboard" asp-controller="Accounts"> Tài khoản của tôi </a></li>
+                        <li> <a asp-action="Dashboard" asp-controller="Accounts"> Đơn hàng của tôi </a></li>
                     </ul>
                 </aside>
                 <aside class="col-md">
                     <h6 class="title">Chúng tôi trên:</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#"> <i class="fab fa-facebook"></i> Facebook </a></li>
-                        <li><a href="#"> <i class="fab fa-twitter"></i> Twitter </a></li>
-                        <li><a href="#"> <i class="fab fa-instagram"></i> Instagram </a></li>
-                        <li><a href="#"> <i class="fab fa-youtube"></i> Youtube </a></li>
+                        <li><a href="https://www.facebook.com/groups/fithitu"> <i class="fab fa-facebook"></i> Facebook </a></li>
+                        <li><a href="https://www.facebook.com/groups/fithitu"> <i class="fab fa-twitter"></i> Twitter </a></li>
+                        <li><a href="https://www.youtube.com/@@dotnet"> <i class="fab fa-instagram"></i> Instagram </a></li>
+                        <li><a href="https://www.youtube.com/@@dotnet"> <i class="fab fa-youtube"></i> Youtube </a></li>
                     </ul>
                 </aside>
             </div> <!-- row.// -->
@@ -52,7 +53,7 @@
 
         <section class="footer-bottom text-center">
 
-            <p class="text-muted"> Công ty TNHH Thương mại và dịch vụ kỹ thuật ABC - GPĐKKD: 0316172372 do sở KH & ĐT TP. HCM cấp ngày 02/03/2020. Địa chỉ: 350-352 Võ Văn Kiệt, Phường Cô Giang, Quận 1, Thành phố Hồ Chí Minh, Việt Nam. Điện thoại: 012.3456.7890. </p>
+            <p class="text-muted"> Công ty TNHH Thương mại và dịch vụ kỹ thuật Hieptech: 0316172372 do sở KH & ĐT TP. HCM cấp ngày 02/03/2020. Địa chỉ: 83 Lê Duẫn, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Việt Nam. Điện thoại: 012.3456.7890. </p>
             <br>
         </section>
     </div><!-- //container -->

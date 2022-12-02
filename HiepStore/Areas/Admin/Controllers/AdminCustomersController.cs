@@ -2,6 +2,7 @@
 using AspNetCoreHero.ToastNotification.Notyf;
 using HiepStore.Helpper;
 using HiepStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using PagedList.Core;
 namespace HiepStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    //[Authorize]
     public class AdminCustomersController : Controller
     {
         private readonly db_hiep_storeContext _context;
@@ -33,6 +35,7 @@ namespace HiepStore.Areas.Admin.Controllers
                 lsCustomers = _context.Customers.AsNoTracking()
                     .Where(x => x.IsActive == false)
                     .Where(x => x.IsDeleted == false)
+                    .Include(x => x.Location)
                     .OrderByDescending(x => x.CreatedAt).ToList();
             }
             else if (isActive == 1)
@@ -40,12 +43,14 @@ namespace HiepStore.Areas.Admin.Controllers
                 lsCustomers = _context.Customers.AsNoTracking()
                     .Where(x => x.IsActive == true)
                     .Where(x => x.IsDeleted == false)
+                    .Include(x => x.Location)
                     .OrderByDescending(x => x.CreatedAt).ToList();
             }
             else
             {
                 lsCustomers = _context.Customers.AsNoTracking()
                     .Where(x => x.IsDeleted == false)
+                    .Include(x => x.Location)
                     .OrderByDescending(x => x.CreatedAt).ToList();
 
             }
@@ -136,27 +141,31 @@ namespace HiepStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            ViewData["TinhThanh"] = new SelectList(_context.Locations, "Id", "Name", customer.LocationId);
+            ViewData["QuanHuyen"] = new SelectList(_context.Districts, "Id", "Name", customer.DistrictId);
+            ViewData["XaPhuong"] = new SelectList(_context.Wards, "Id", "Name", customer.WardId);
             return View(customer);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Birthday,Avatar,Address,Email,Phone,LocationId,District,Ward,CreatedAt,UpdatedAt,Password,Salt,LastLogin,IsActive,IsDeleted")] Customer customer, Microsoft.AspNetCore.Http.IFormFile fThumb)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Birthday,Avatar,Address,Email,Phone,LocationId,DistrictId,WardId,CreatedAt,UpdatedAt,Password,Salt,LastLogin,IsActive,IsDeleted")] Customer customer, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             if (id != customer.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 try
                 {
-                    if (fThumb != null)
+                customer.FirstName = Utilities.ToTitleCase(customer.FirstName);
+                if (fThumb != null)
                     {
                         string extension = Path.GetExtension(fThumb.FileName);
                         string image = Utilities.SEOUrl(customer.FirstName) + extension;
-                        customer.Avatar = await Utilities.UploadFile(fThumb, @"customers", image.ToLower());
+                        customer.Avatar = await Utilities.UploadFile(fThumb, @"avatars", image.ToLower());
                     }
                     if (string.IsNullOrEmpty(customer.Avatar)) customer.Avatar = "default.jpg";
                     customer.UpdatedAt = DateTime.Now;
@@ -176,7 +185,11 @@ namespace HiepStore.Areas.Admin.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            //}
+            ViewData["TinhThanh"] = new SelectList(_context.Locations, "Id", "Name", customer.LocationId);
+            ViewData["QuanHuyen"] = new SelectList(_context.Districts, "Id", "Name", customer.DistrictId);
+            ViewData["XaPhuong"] = new SelectList(_context.Wards, "Id", "Name", customer.WardId);
+
             return View(customer);
         }
 

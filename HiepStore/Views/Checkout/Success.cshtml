@@ -1,0 +1,233 @@
+﻿@model HiepStore.ModelViews.MuaHangSuccessVM
+@{
+	ViewData["Title"] = "Đặt hàng thành công";
+}
+<style>
+	/*!
+	 * Bootstrap Steps v1.0.3 (https://github.com/ycs77/bootstrap-steps)
+	 * Copyright 2020 Lucas Yang <yangchenshin77@gmail.com>
+	 * Licensed under MIT (https://github.com/ycs77/bootstrap-steps/blob/master/LICENSE)
+	 */
+	.steps {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		display: flex;
+		overflow-x: auto
+	}
+
+		.steps
+		.step:first-child {
+			margin-left: auto
+		}
+
+		.steps .step:last-child {
+			margin-right: auto
+		}
+
+	.step:first-of-type .step-circle::before {
+		display: none
+	}
+
+	.step:last-of-type .step-content {
+		padding-right: 0
+	}
+
+	.step-content {
+		box-sizing: content-box;
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		width: 6rem;
+		min-width: 5rem;
+		max-width: 6rem;
+		padding-top: .5rem;
+		padding-right: 1rem
+	}
+
+	.step-circle {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 1.5rem;
+		height: 1.5rem;
+		color: #adb5bd;
+		border: 2px solid #adb5bd;
+		border-radius: 100%;
+		background-color: #fff
+	}
+
+		.step-circle::before {
+			content: "";
+			display: block;
+			position: absolute;
+			top: 50%;
+			left: -2px;
+			width: calc(6rem + 1rem - 1.5rem);
+			height: 2px;
+			transform: translate(-100%,-50%);
+			color: #adb5bd;
+			background-color: currentColor
+		}
+
+	.step-text {
+		color: #adb5bd;
+		word-break: break-all;
+		margin-top: .25em
+	}
+
+	.step-active .step-circle {
+		color: #fff;
+		background-color: #007bff;
+		border-color: #007bff
+	}
+
+		.step-active .step-circle::before {
+			color: #007bff
+		}
+
+	.step-active .step-text {
+		color: #007bff
+	}
+
+	.step-error .step-circle {
+		color: #fff;
+		background-color: #dc3545;
+		border-color: #dc3545
+	}
+
+		.step-error .step-circle::before {
+			color: #dc3545
+		}
+
+	.step-error .step-text {
+		color: #dc3545
+	}
+
+	.step-success .step-circle {
+		color: #28a745;
+		background-color: #fff;
+		border-color: #28a745
+	}
+
+		.step-success .step-circle::before {
+			color: #28a745
+		}
+
+	.step-success .step-text {
+		color: #28a745
+	}
+	/*# sourceMappingURL=bootstrap-steps.min.css.map */
+</style>
+<!-- ========================= SECTION CONTENT ========================= -->
+<div class="row">
+	<div class="col-lg-8 my-4">
+		<!-- ============== COMPONENT FINAL =============== -->
+		<article class="card">
+			<div class="card-body">
+				<div class="mt-4 mx-auto text-center" style="max-width:600px">
+					<svg width="96px" height="96px" viewBox="0 0 96 96" version="1.1"
+						 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+						<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+							<g id="round-check">
+								<circle id="Oval" fill="#D3FFD9" cx="48" cy="48" r="48">
+								</circle>
+								<circle id="Oval-Copy" fill="#87FF96" cx="48" cy="48" r="36">
+
+								</circle>
+								<polyline id="Line" stroke="#04B800" stroke-width="4" stroke-linecap="round"
+										  points="34.188562 49.6867496 44 59.3734993 63.1968462 40.3594229">
+
+								</polyline>
+							</g>
+						</g>
+					</svg>
+					<div class="my-3">
+						<h4>Cảm ơn bạn đã mua hàng</h4>
+						<p>
+							Đơn hàng của bạn đang trên đường đến tay bạn. Chúng tôi sẽ giao nhanh nhất có thể. Cảm ơn bạn đã ủng hộ sản phẩm của chúng tôi.
+						</p>
+					</div>
+				</div>
+				<ul class="steps">
+					<li class="step step-success">
+						<div class="step-content">
+							<span class="step-circle">1</span>
+							<span class="step-text">thanh toán</span>
+						</div>
+					</li>
+					<li class="step step-active">
+						<div class="step-content">
+							<span class="step-circle">2</span>
+							<span class="step-text">lấy hàng</span>
+						</div>
+					</li>
+					<li class="step">
+						<div class="step-content">
+							<span class="step-circle">3</span>
+							<span class="step-text">giao hàng</span>
+						</div>
+					</li>
+					<li class="step">
+						<div class="step-content">
+							<span class="step-circle">4</span>
+							<span class="step-text">Nhận hàng</span>
+						</div>
+					</li>
+				</ul> <!-- tracking-wrap.// -->
+				<br>
+			</div>
+		</article>
+		<!-- ============== COMPONENT FINAL .// =============== -->
+	</div> <!-- col.// -->
+	<aside class="col-lg-4 my-4">
+		<!-- ============== COMPONENT RECEIPE =============== -->
+		<article class="card">
+			<div class="card-body">
+				<h5 class="card-title"> Thông tin đơn hàng </h5>
+				<div class="itemside mb-3">
+					<div class="aside">
+						<span class="icon-sm text-primary bg-primary-light rounded">
+							<i class="fab fa-lg fa-paypal"></i>
+						</span>
+					</div>
+					<div class="info lh-sm">
+						<strong>Mã đơn hàng: @Model.DonHangID</strong>
+						<br>
+						<span class="text-muted">Wed, Sept 13, 2021</span>
+					</div>
+				</div>
+				<dl class="dlist-align">
+					<dt>Phương thức thanh toán:</dt>
+					<dd>Visa - - - - 9902</dd>
+				</dl>
+				<dl class="dlist-align">
+					<dt>số tiền đã thanh toán:</dt>
+					<dd>@Model.TotalMoney.ToString("#,##0") VNĐ</dd>
+				</dl>
+				<dl class="dlist-align">
+					<dt>Người nhận hàng:</dt>
+					<dd>@Model.LastName @Model.FirtName</dd>
+				</dl>
+				<dl class="dlist-align">
+					<dt>Số điện thoại:</dt>
+					<dd>@Model.Phone</dd>
+				</dl>
+				<dl class="dlist-align">
+					<dt>Email:</dt>
+					<dd>@Model.Email</dd>
+				</dl>
+				<dl class="dlist-align">
+					<dt>Địa chỉ nhận hàng:</dt>
+					<dd>@Model.Address</dd>
+				</dl>
+
+				<hr>
+				<a type="button" asp-controller="Accounts" asp-action="Dashboard" class="btn btn-light">Xem chi tiết đơn hàng</a>
+				<a type="button" asp-controller="home" asp-action="Index" class="btn btn-light">Tiếp tục mua sắm</a>
+			</div>
+		</article><!-- ============== COMPONENT RECEIPE .// =============== -->
+	</aside> <!-- col.// -->
+</div>
+<!-- ========================= SECTION CONTENT END// ========================= -->

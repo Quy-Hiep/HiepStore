@@ -1,0 +1,227 @@
+﻿@model HiepStore.ModelViews.MuaHangVM
+@{
+    ViewData["Title"] = "Thông tin Mua hàng";
+    List<HiepStore.ModelViews.CartItem> Carts = ViewBag.GioHang;
+}
+
+<!-- ============== SECTION PAGETOP ============== -->
+<section class="py-3 bg-light">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"> <a href="#">1. Trang chủ</a>  </li>
+            <li class="breadcrumb-item"> <a href="#">2. giỏ hàng</a>  </li>
+            <li class="breadcrumb-item active"> 3. thông tin đơn hàng  </li>
+            <li class="breadcrumb-item"> 4. Thanh toán   </li>
+        </ol>
+    </div> <!-- container //  -->
+</section>
+<!-- ============== SECTION PAGETOP END// ============== -->
+<!-- ============== SECTION ============== -->
+<section class="padding-y">
+    <div class="container">
+        <form asp-controller="Checkout" asp-action="Index" method="post">
+            <input hidden asp-for="CustomerId" />
+            <div class="row">
+                <main class="col-xl-8 col-lg-8">
+                    <!-- ============== COMPONENT Login =============== -->
+                    <!--<article class="card mb-4">
+                            <div class="content-body">
+                                <div class="float-right">
+                                    <a href="#" class="btn btn-outline-primary">đăng kí</a>
+                                    <a href="#" class="btn btn-primary">Đăng nhập</a>
+                                </div>
+                                <h5>Bạn đã có tài khoản?</h5>
+                                <p class="mb-0">Đăng nhập hoặc đăng kí một tài khoản mới</p>
+                            </div>
+                    </article>-->
+                    <!-- ============== COMPONENT Login END// =============== -->
+                    <!-- ============== COMPONENT CHECKOUT =============== -->
+                    <article class="card">
+                        <div class="content-body">
+                            <h5 class="card-title">Thông tin đơn hàng</h5>
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Tên</label>
+                                    <input asp-for="FirstName" type="text" class="form-control" placeholder="Nhập tên">
+                                </div> <!-- col end.// -->
+
+                                <div class="col-6">
+                                    <label class="form-label">Họ</label>
+                                    <input asp-for="LastName" type="text" class="form-control" placeholder="Nhập họ">
+                                </div> <!-- col end.// -->
+
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Điện thoại</label>
+                                    <input asp-for="Phone" type="text" class="form-control" placeholder="nhập số điện thoại">
+                                </div> <!-- col end.// -->
+
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input asp-for="Email" type="email" class="form-control" placeholder="example@gmail.com">
+                                </div> <!-- col end.// -->
+                            </div> <!-- row.// -->
+
+                            <label class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" value="">
+                                <span class="form-check-label"> Thông báo cho tôi khi có tin mới </span>
+                            </label>
+
+                            <hr class="my-4">
+
+                            <h5 class="card-title"> Hình thức vận chuyển </h5>
+
+                            <div class="row mb-3">
+                                <div class="col-lg-4 mb-3">
+                                    <div class="box box-check">
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="radio" name="dostavka" checked="">
+                                            <b class="border-oncheck"></b>
+                                            <span class="form-check-label">
+                                                Vận chuyển hỏa tốc<br>
+                                                <small class="text-muted">Giao nhanh trong vòng 4 giờ </small>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div> <!-- col end.// -->
+                                <div class="col-lg-4 mb-3">
+                                    <div class="box box-check">
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="radio" name="dostavka">
+                                            <b class="border-oncheck"></b>
+                                            <span class="form-check-label">
+                                                Vận chuyển nhanh <br>
+                                                <small class="text-muted">2 - 3 days</small>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div> <!-- col end.// -->
+                                <div class="col-lg-4 mb-3">
+                                    <div class="box box-check">
+                                        <label class="form-check">
+                                            <input class="form-check-input" type="radio" name="dostavka">
+                                            <b class="border-oncheck"></b>
+                                            <span class="form-check-label">
+                                                vận chuyển tiết kiệm  <br>
+                                                <small class="text-muted">3 - 4 days </small>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div> <!-- col end.// -->
+                            </div> <!-- row end.// -->
+
+                            <div class="row">
+                                <div class="col-sm-4 mb-3">
+                                    <label for="" class="form-label">Tỉnh / Thành phố*</label>
+                                    <select class="form-control" id="city*" aria-label="City*">
+                                        <option value="1">New York</option>
+                                        <option value="2">Moscow</option>
+                                        <option value="3">Samarqand</option>
+                                    </select>
+                                </div> <!-- col end.// -->
+                                <div class="col-sm-4 mb-3">
+                                    <label for="" class="form-label">Quận / Huyện*</label>
+                                    <select class="form-control" id="city*" aria-label="City*">
+                                        <option value="1">New York</option>
+                                        <option value="2">Moscow</option>
+                                        <option value="3">Samarqand</option>
+                                    </select>
+                                </div> <!-- col end.// -->
+                                <div class="col-sm-4 mb-3">
+                                    <label for="" class="form-label">Xã / Phường*</label>
+                                    <select class="form-control" id="city*" aria-label="City*">
+                                        <option value="1">New York</option>
+                                        <option value="2">Moscow</option>
+                                        <option value="3">Samarqand</option>
+                                    </select>
+                                </div> <!-- col end.// -->
+
+                                <div class="col-sm-12 mb-3">
+                                    <label for="" class="form-label">Địa chỉ chi tiết*</label>
+                                    <input asp-for="Address" type="text" class="form-control" placeholder="Nhập địa chỉ">
+                                </div> <!-- col end.// -->
+                            </div><!-- row.// -->
+
+                            <label class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" value="">
+                                <span class="form-check-label"> Lưu địa chỉ vào tài khoản </span>
+                            </label>
+
+                            <div class="mb-4">
+                                <label for="" class="form-label">Ghi chú cho người bán</label>
+                                <textarea asp-for="Note" class="form-control"></textarea>
+                            </div> <!-- col end.// -->
+
+                            <div class="float-right">
+                                <button class="btn btn-light">Trở về</button>
+                                <button type="submit" class="btn btn-success">Xác nhận đặt hàng</button>
+                            </div>
+
+                        </div> <!-- card-body end.// -->
+                    </article> <!-- card end.// -->
+                    <!-- ============== COMPONENT CHECKOUT .// =============== -->
+
+                </main> <!-- col.// -->
+                <aside class="col-xl-4 col-lg-4">
+                    <!-- ============== COMPONENT SUMMARY =============== -->
+                    @{
+                        var TotalPrice = @Carts.Sum(x => x.TotalPrice);
+                        var TotalDiscount = @Carts.Sum(x => x.TotalDiscount);
+                        var ShipPrice = 15000;
+                        var TotalPricePayment = TotalDiscount - ShipPrice;
+                    }
+                    <article class="ms-lg-4 mt-4 mt-lg-0" style="max-width: 320px">
+                        <h6 class="card-title">Chi tiết thanh toán</h6>
+
+                        <dl class="dlist-align">
+                            <dt>Tổng tiền hàng:</dt>
+                            <dd class="text-right"> @TotalPrice.ToString("#,##0") VNĐ</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Giảm giá:</dt>
+                            <dd class="text-right text-danger"> @TotalDiscount.ToString("#,##0") VNĐ </dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Phí vận chuyển:</dt>
+                            <dd class="text-right"> @ShipPrice.ToString("#,##0") VNĐ </dd>
+                        </dl>
+                        <hr>
+                        <dl class="dlist-align">
+                            <dt> Tổng thanh toán: </dt>
+                            <dd class="text-right"> <strong class="text-dark">@TotalPricePayment.ToString("#,##0") VNĐ</strong> </dd>
+                        </dl>
+
+                        <div class="input-group my-4">
+                            <input type="text" class="form-control" name="" placeholder="Nhập mã giảm giá">
+                            <button class="btn btn-light text-primary">Áp dụng</button>
+                        </div>
+
+                        <hr>
+                        <h6 class="mb-4">sản phẩm trong giỏ hàng</h6>
+
+                        @if (Carts.Count() > 0)
+                        {
+                            foreach (var item in Carts)
+                            {
+                                <figure class="itemside align-items-center mb-4">
+                                    <div class="aside">
+                                        <b class="notify bg-secondary">@item.amount</b>
+                                        <img src="images/items/1.jpg" class="img-sm rounded border">
+                                    </div>
+                                    <figcaption class="info">
+                                        <a href="#" class="title">@item.product.Name</a>
+                                        <span class="price text-muted">Đơn giá (Đã giảm): @item.product.Discount.Value.ToString("#,##0") VNĐ x @item.amount</span>
+                                        <div class="price text-muted">Total: @item.TotalPriceDiscount.ToString("#,##0") VNĐ</div> <!-- price .// -->
+                                    </figcaption>
+                                </figure>
+                            }
+                        }
+                    </article>
+                    <!-- ============== COMPONENT SUMMARY .// =============== -->
+                </aside> <!-- col.// -->
+            </div> <!-- row.// -->
+
+        </form>
+        <br /><br />
+    </div> <!-- container .//  -->
+</section>
+<!-- ============== SECTION END// ============== -->

@@ -1,0 +1,31 @@
+﻿@model HiepStore.Models.Page
+
+@{
+    ViewData["Title"] = Model.Title;
+    string url = $"/page/{Model.Alias}";
+}
+
+
+<section class="section-content padding-y">
+    <div class="container">
+
+        <header class="section-heading">
+            <h2 class="section-title">@Model.Name </h2>
+            <br/>
+        </header><!-- sect-heading -->
+
+        <article>
+            @Html.Raw(Model.Contents)
+        </article>
+
+        <br><br><br>
+
+        <a href="javascript: history.back()" class="btn btn-light"> &laquo Trở về</a>
+        <br><br><br>
+
+
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+

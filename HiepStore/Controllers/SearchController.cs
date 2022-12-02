@@ -13,6 +13,8 @@ namespace HiepStore.Controllers
         {
             _context = context;
         }
+
+        [Route("/tim-kiem")]
         public ActionResult Search(string currentFilter, string SearchString, int? page)
         {
             //List<Product> lstProduct = new List<Product>();
@@ -51,6 +53,7 @@ namespace HiepStore.Controllers
             ViewBag.Count = count;
             ViewBag.Category = ListCategory;
             ViewBag.Brand = ListBrand;
+            ViewBag.SearchString = SearchString;
             //số lượng item cua 1 trang
             int pageSize = 10;
             var pageNumber = page == null || page <= 0 ? 1 : page.Value;

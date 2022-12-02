@@ -18,5 +18,9 @@ namespace HiepStore.ModelViews
         [Required(ErrorMessage ="Vui lòng nhập mật khẩu")]
         [MinLength(5,ErrorMessage ="Bạn cần đặt mật khẩu tối thiểu 5 ký tự")]
         public string? Password { get; set; }
+
+        public string FacebookAppId { get; set; }
+        public string FacebookRedirectUri { get; set; }
+
     }
 }

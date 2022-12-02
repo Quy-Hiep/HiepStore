@@ -116,7 +116,7 @@ namespace HiepStore.Controllers
                 return Json(new { success = false });
             }
         }
-        //[Route("cart.html", Name = "Cart")]
+        [Route("cart", Name = "Cart")]
         public IActionResult Index()
         {
             return View(GioHang);

@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using HiepStore.Helpper;
+using Microsoft.Extensions.Options;
+using NuGet.Protocol.Plugins;
+using HiepStore.Facebook.Core.Models;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace HiepStore.Controllers
 {
@@ -17,14 +22,18 @@ namespace HiepStore.Controllers
         private readonly db_hiep_storeContext _context;
         public INotyfService _notyfService { get; }
 
-        public AccountsController(db_hiep_storeContext context, INotyfService notyfService)
+        private readonly AppSettings _appSettings;
+
+
+        public AccountsController(db_hiep_storeContext context, INotyfService notyfService, IOptions<AppSettings> appSettings)
         {
             _context = context;
             _notyfService = notyfService;
+            _appSettings = appSettings.Value;
+
 
         }
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult ValidatePhone(string Phone)
         {
             try
@@ -42,7 +51,6 @@ namespace HiepStore.Controllers
             }
         }
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult ValidateEmail(string Email)
         {
             try
@@ -57,6 +65,8 @@ namespace HiepStore.Controllers
                 return Json(data: true);
             }
         }
+
+        [Route("tai-khoan-cua-toi.html", Name = "Dashboard")]
         public IActionResult Dashboard()
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
@@ -81,14 +91,14 @@ namespace HiepStore.Controllers
 
 
         [HttpGet]
-        [AllowAnonymous]
+        [Route("dang-ky.html", Name = "DangKy")]
         public IActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Route("dang-ky.html", Name = "DangKy")]
         public async Task<IActionResult> Register(RegisterViewModel taikhoan)
         {
             try
@@ -143,18 +153,25 @@ namespace HiepStore.Controllers
             }
         }
 
-        [AllowAnonymous]
-        public IActionResult Login(string returnUrl = null)
+        [Route("dang-nhap.html", Name = "DangNhap")]
+        public IActionResult Login(string returnUrl)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            //kiểm tra xem đã có session login chưa, nếu có rồi thì tức là đã đăng nhập rồi, trả về trang dashboard tài khoản
             if (taikhoanID != null)
             {
                 return RedirectToAction("Dashboard", "Accounts");
             }
-            return View();
+            LoginViewModel loginViewModel = new LoginViewModel()
+            {
+                FacebookAppId = _appSettings.FacebookAppId,
+                FacebookRedirectUri = _appSettings.FacebookRedirectUri
+            };
+            ViewData["returnUrl"] = returnUrl;
+            return View(loginViewModel);
         }
         [HttpPost]
-        [AllowAnonymous]
+        [Route("dang-nhap.html", Name = "DangNhap")]
         public async Task<IActionResult> Login(LoginViewModel customer, string returnUrl)
         {
             try
@@ -163,12 +180,16 @@ namespace HiepStore.Controllers
                 if (!isEmail) return View(customer);
 
                 var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.Email.Trim() == customer.UserName);
-
-                if (khachhang == null) return RedirectToAction("Register");
+                if (khachhang == null)
+                {
+                    _notyfService.Error("Email chưa kết nối tài khoản nào, hãy tìm tài khoản của bạn và đăng nhập");
+                    return View(customer);
+                }
                 string pass = (customer.Password + khachhang.Salt.Trim()).ToMD5();
                 if (khachhang.Password != pass)
                 {
-                    _notyfService.Success("Thông tin đăng nhập chưa chính xác");
+                    _notyfService.Error("Thông tin đăng nhập chưa chính xác");
+                    ViewData["returnUrl"] = returnUrl;
                     return View(customer);
                 }
                 //kiem tra xem account co bi disable hay khong
@@ -178,19 +199,21 @@ namespace HiepStore.Controllers
                     return RedirectToAction("ThongBao", "Accounts");
                 }
 
-                //Luu Session MaKh
+                //Luu Session CustomerId
                 HttpContext.Session.SetString("CustomerId", khachhang.Id.ToString());
-                var taikhoanID = HttpContext.Session.GetString("CustomerId");
 
                 //Identity
-                var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, khachhang.LastName),
-                        new Claim("CustomerId", khachhang.Id.ToString())
-                    };
-                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
-                ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                await HttpContext.SignInAsync(claimsPrincipal);
+                //var claims = new List<Claim>
+                //{
+                //    new Claim(ClaimTypes.Email, khachhang.Email),
+                //    new Claim("CustomerId", khachhang.Id.ToString())
+
+                //};
+                //var claimsIdentity = new ClaimsIdentity(claims, "User Identity");
+                //var claimsPrincipal = new ClaimsPrincipal(new[] { claimsIdentity });
+                //await HttpContext.SignInAsync(claimsPrincipal);
+
+
                 _notyfService.Success("Đăng nhập thành công");
                 if (string.IsNullOrEmpty(returnUrl))
                 {
@@ -203,11 +226,96 @@ namespace HiepStore.Controllers
             }
             catch
             {
-                return RedirectToAction("Register", "Accounts");
+                ViewData["returnUrl"] = returnUrl;
+                return View(customer);
             }
-            return View(customer);
         }
+
+
+        [Route("signin-facebook", Name = "signin-facebook")]
+        public async Task<IActionResult> LoginWithFacebookAsync(string code)
+        {
+            try
+            {
+                Login.AccessToken accessToken = await Facebook.Core.Services.Login.GetAccessTokenAsync(_appSettings.FacebookAppId, _appSettings.FacebookAppSecret, _appSettings.FacebookRedirectUri, code);
+
+                User user = await Facebook.Core.Services.Graph.GetUserAsync(accessToken.access_token);
+
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.Email.Trim() == user.email);
+                //kiểm tra xem email lấy từ tk fb đã tồn tại trong database chưa.
+                //nếu rồi thì đăng lưu Session đăng nhập,
+                //nếu chưa thì tiến hàng đăng kí(insert thông tin tài khoản fb vào table customers)
+                if (khachhang != null)
+                {
+                    //lưu Session mã khách hàng
+                    HttpContext.Session.SetString("CustomerId", khachhang.Id.ToString());
+                    _notyfService.Success("Đăng nhập thành công");
+                    return RedirectToAction("Dashboard", "Accounts");
+                }
+                else
+                {
+                    try
+                    {
+                        if (ModelState.IsValid)
+                        {
+                            Customer customer = new Customer
+                            {
+                                FirstName = user.first_name,
+                                LastName = user.last_name,
+                                //Phone = user.Phone.Trim().ToLower(),
+                                Email = user.email.Trim().ToLower(),
+                                //Password = (taikhoan.Password + salt.Trim()).ToMD5(),
+                                IsActive = true,
+                                CreatedAt = DateTime.Now
+                            };
+                            try
+                            {
+                                _context.Add(customer);
+                                await _context.SaveChangesAsync();
+                                //Lưu Session CustomerId
+                                HttpContext.Session.SetString("CustomerId", customer.Id.ToString());
+
+                                //Identity
+                                //var claims = new List<Claim>
+                                //{
+                                //    new Claim(ClaimTypes.Name,customer.FirstName),
+                                //    new Claim("CustomerId", customer.Id.ToString())
+                                //};
+                                //ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
+                                //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                                //await HttpContext.SignInAsync(claimsPrincipal);
+                                _notyfService.Success("Đăng nhập với facebook thành công");
+                                return RedirectToAction("Dashboard", "Accounts");
+                            }
+                            catch
+                            {
+                                return RedirectToAction("login", "Accounts");
+                            }
+                        }
+                        else
+                        {
+                            return RedirectToAction("login", "Accounts");
+                        }
+                    }
+                    catch
+                    {
+                        return RedirectToAction("login", "Accounts");
+                    }
+
+                }
+            }
+            catch
+            {
+
+                return RedirectToAction("login", "Accounts");
+            }
+
+
+        }
+
+
         [HttpGet]
+        [Route("dang-xuat.html", Name = "DangXuat")]
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync();

@@ -12,9 +12,10 @@ namespace HiepStore.Controllers
             _logger = logger;
             _context = context;
         }
+        [Route("/thuonghieu")]
         public IActionResult Index()
         {
-            var ListBrands = _context.Categories.ToList();
+            var ListBrands = _context.Brands.ToList();
             return View(ListBrands);
         }
     }

@@ -12,6 +12,8 @@ namespace HiepStore.Controllers
             _logger = logger;
             _context = context;
         }
+
+        [Route("/danhmuc")]
         public IActionResult Index()
         {
             var ListCategory = _context.Categories.ToList();

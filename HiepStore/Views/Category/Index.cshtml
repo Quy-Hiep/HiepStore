@@ -8,13 +8,14 @@
 
         <nav class="row">
             @foreach (var item in Model)
-            {
+            {                                    
+                string url = $"/{item.Alias}";
                 <div class="col-md-3">
 
                     <div class="card card-category text-center">
                         <img class="img-thumbnail " src="~/assets/images/category/@item.Thumb">
                         <div class="card-body">
-                            <h4 class="card-title"><a asp-controller="Product" asp-action="ProductCategory" asp-route-id="@item.Id">@item.Name</a></h4>
+                            <h4 class="card-title"><a href="@url">@item.Name</a></h4>
                             <ul class="list-menu">
                                 <li><a href="">Unisex T shirts</a></li>
                                 <li><a href="">Casual shirts</a></li>

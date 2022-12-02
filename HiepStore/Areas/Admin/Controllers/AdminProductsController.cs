@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using HiepStore.Helpper;
 using HiepStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +11,7 @@ using PagedList.Core;
 namespace HiepStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    //[Authorize]
     public class AdminProductsController : Controller
     {
         private readonly db_hiep_storeContext _context;

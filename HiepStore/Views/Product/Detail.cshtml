@@ -9,8 +9,9 @@
 <section class="py-3 bg-light">
     <div class="container">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="@Url.Action("ProductCategory", "Category")/@Model.CategoryId">chi tiết sản phẩm</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/@Model.Category.Alias">@Model.Category.Name</a></li>
+            <li class="breadcrumb-item"><a href="/thuonghieu/@Model.Brand.Alias">@Model.Brand.Name</a></li>
             <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
         </ol>
     </div>

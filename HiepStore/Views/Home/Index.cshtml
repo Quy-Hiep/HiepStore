@@ -18,7 +18,8 @@
                             <ul class="menu-category">
                                 @foreach (var item in Model.ListCategory.Take(7))
                                 {
-                                    <li><a asp-controller="Product" asp-action="ProductCategory" asp-route-id="@item.Id">@item.Name</a></li>
+                                    string url = $"/{item.Alias}";
+                                    <li><a href="@url">@item.Name</a></li>
                                 }
                                 </li>
                                 <li><a asp-controller="Category" asp-action="Index">Tất cả danh mục</a></li>
@@ -110,14 +111,15 @@
             <div class="row no-gutters items-wrap">
                 @foreach (var item in Model.ListProduct.Where(n => n.TypeId == 1).Take(5))
                 {
+                    string url = $"/{item.Alias}-{item.Id}.html";
                     <div class="col-md col-6">
                         <figure class="card-product-grid card-sm">
-                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" class="img-wrap">
+                            <a href="@url" class="img-wrap">
 
                                 <img src="~/assets/images/products/@item.Thumb">
                             </a>
                             <div class="text-wrap p-3">
-                                <a href="@Url.Action("Detail", "Product", new {Id = item.Id})" class="title">@item.Name</a>
+                                <a href="@url" class="title">@item.Name</a>
                                 <span class="h6 price text-muted" style="text-decoration: line-through;">@Convert.ToDecimal(item.Price).ToString("#,##") đ</span>
                                 <br />
                                 <span class="h6 price">@Convert.ToDecimal(item.Discount).ToString("#,##") đ</span>
@@ -153,9 +155,10 @@
                 <div class="col-md-9">
                     <ul class="row no-gutters bordered-cols">
                         @foreach (var item in Model.ListProduct.Where(n => n.CategoryId == 1 && n.TypeId == 2).Take(8))
-                        {
+                        {        
+                            string url = $"/{item.Alias}-{item.Id}.html";
                             <li class="col-6 col-lg-3 col-md-4">
-                                <a href="@Url.Action("Detail", "Product", new {Id = item.Id})" class="item">
+                                <a href="@url" class="item">
                                     <div class="card-body">
                                         <span class="title">@item.Name </span>
                                         <br />
@@ -197,8 +200,9 @@
                     <ul class="row no-gutters bordered-cols">
                         @foreach (var item in Model.ListProduct.Where(n => n.CategoryId == 2).Take(8))
                         {
+                            string url = $"/{item.Alias}-{item.Id}.html";
                             <li class="col-6 col-lg-3 col-md-4">
-                                <a href="@Url.Action("Detail", "Product", new {Id = item.Id})" class="item">
+                                <a href="@url" class="item">
                                     <div class="card-body">
                                         <span class="title">@item.Name </span>
                                         <br />
@@ -237,8 +241,9 @@
                     <ul class="row no-gutters bordered-cols">
                         @foreach (var item in Model.ListProduct.Where(n => n.CategoryId == 3).Take(8))
                         {
+                            string url = $"/{item.Alias}-{item.Id}.html";
                             <li class="col-6 col-lg-3 col-md-4">
-                                <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" class="item">
+                                <a href="@url" class="item">
                                     <div class="card-body">
                                         <span class="title">@item.Name </span>
                                         <br />
@@ -329,13 +334,14 @@
         <div class="row row-sm">
             @foreach (var item in Model.ListProduct.Where(n => n.TypeId == 2).Take(12))
             {
+                string url = $"/{item.Alias}-{item.Id}.html";
                 <div class="col-xl-2 col-lg-3 col-md-4 col-6">
                     <div class="card card-sm card-product-grid">
-                        <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" class="img-wrap">
+                        <a href="@url" class="img-wrap">
                             <img src="~/assets/images/products/@item.Thumb">
                          </a>
                         <figcaption class="info-wrap">
-                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" style="text-align: center;" class="title">@item.Name</a>
+                            <a href="@url" style="text-align: center;" class="title">@item.Name</a>
                             <span style="display: flex; justify-content: center; text-decoration: line-through; " class="h6 price text-muted">@Convert.ToDecimal(item.Price).ToString("#,##") đ</span>
                             <span style="display: flex; justify-content: center;" class="h6 price">@Convert.ToDecimal(item.Discount).ToString("#,##") đ</span>
                         </figcaption>
