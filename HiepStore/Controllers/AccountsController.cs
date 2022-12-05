@@ -14,6 +14,9 @@ using NuGet.Protocol.Plugins;
 using HiepStore.Facebook.Core.Models;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HiepStore.Controllers
 {
@@ -67,21 +70,28 @@ namespace HiepStore.Controllers
         }
 
         [Route("tai-khoan-cua-toi.html", Name = "Dashboard")]
+
+        [HttpGet]
         public IActionResult Dashboard()
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
             {
                 var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.Id == Convert.ToInt32(taikhoanID));
+                var recentOrders = _context.Products.AsNoTracking().Take(4);//lấy sản phẩm vừa đặt gần đây(tạm thời lấy đại 4 cái sản phẩm trong kho)
+                var favoriteProduct = _context.Products.AsNoTracking().Take(12);//Sản phẩm yêu thích
+                
                 if (khachhang != null)
                 {
                     var lsDonHang = _context.Orders
                         .Include(x => x.TransactStatus)
-                        .AsNoTracking()
+                        .Include(x => x.Customer).AsNoTracking()
                         .Where(x => x.CustomerId == khachhang.Id)
                         .OrderByDescending(x => x.OrderDate)
                         .ToList();
                     ViewBag.DonHang = lsDonHang;
+					ViewBag.recentOrders = recentOrders;
+					ViewBag.favoriteProduct = favoriteProduct;
                     return View(khachhang);
                 }
 
@@ -90,7 +100,57 @@ namespace HiepStore.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
+		public async Task<IActionResult> EditCustomer(int id,  Customer cus, Microsoft.AspNetCore.Http.IFormFile fThumb)
+		{
+			if (id != cus.Id)
+			{
+				return NotFound();
+			}
+
+			try
+			{
+				var customer = await _context.Customers.FindAsync(id);
+				cus.FirstName = Utilities.ToTitleCase(cus.FirstName);
+				if (fThumb != null)
+				{
+					string extension = Path.GetExtension(fThumb.FileName);
+					string image = Utilities.SEOUrl(cus.FirstName) + extension;
+					customer.Avatar = await Utilities.UploadFile(fThumb, @"avatars", image.ToLower());
+				}
+
+				if (string.IsNullOrEmpty(customer.Avatar)) customer.Avatar = "default.jpg";
+				customer.FirstName = cus.FirstName;
+				customer.LastName = cus.LastName;
+				customer.Email = cus.Email;
+				customer.Phone = cus.Phone;
+				customer.UpdatedAt = DateTime.Now;
+
+				_context.Update(customer);
+				_notyfService.Success("Cập nhật thành công");
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!CustomerExists(cus.Id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return RedirectToAction("Dashboard", "Accounts");
+		}
+
+		private bool CustomerExists(int id)
+		{
+			return _context.Customers.Any(e => e.Id == id);
+		}
+
+
+		[HttpGet]
         [Route("dang-ky.html", Name = "DangKy")]
         public IActionResult Register()
         {
@@ -196,25 +256,28 @@ namespace HiepStore.Controllers
 
                 if (khachhang.IsActive == false)
                 {
-                    return RedirectToAction("ThongBao", "Accounts");
+					_notyfService.Error("Tài khoản đã bị tạm khóa, vui lòng liên quản trị viên để mở lại");
+					return View(customer);
                 }
 
                 //Luu Session CustomerId
                 HttpContext.Session.SetString("CustomerId", khachhang.Id.ToString());
+				khachhang.LastLogin= DateTime.Now;
+				_context.Update(khachhang);
+				await _context.SaveChangesAsync();
+				//Identity
+				//var claims = new List<Claim>
+				//{
+				//    new Claim(ClaimTypes.Email, khachhang.Email),
+				//    new Claim("CustomerId", khachhang.Id.ToString())
 
-                //Identity
-                //var claims = new List<Claim>
-                //{
-                //    new Claim(ClaimTypes.Email, khachhang.Email),
-                //    new Claim("CustomerId", khachhang.Id.ToString())
-
-                //};
-                //var claimsIdentity = new ClaimsIdentity(claims, "User Identity");
-                //var claimsPrincipal = new ClaimsPrincipal(new[] { claimsIdentity });
-                //await HttpContext.SignInAsync(claimsPrincipal);
+				//};
+				//var claimsIdentity = new ClaimsIdentity(claims, "User Identity");
+				//var claimsPrincipal = new ClaimsPrincipal(new[] { claimsIdentity });
+				//await HttpContext.SignInAsync(claimsPrincipal);
 
 
-                _notyfService.Success("Đăng nhập thành công");
+				_notyfService.Success("Đăng nhập thành công");
                 if (string.IsNullOrEmpty(returnUrl))
                 {
                     return RedirectToAction("Dashboard", "Accounts");
@@ -243,13 +306,16 @@ namespace HiepStore.Controllers
 
                 var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.Email.Trim() == user.email);
                 //kiểm tra xem email lấy từ tk fb đã tồn tại trong database chưa.
-                //nếu rồi thì đăng lưu Session đăng nhập,
+                //nếu rồi thì đăng nhập,
                 //nếu chưa thì tiến hàng đăng kí(insert thông tin tài khoản fb vào table customers)
                 if (khachhang != null)
                 {
                     //lưu Session mã khách hàng
                     HttpContext.Session.SetString("CustomerId", khachhang.Id.ToString());
-                    _notyfService.Success("Đăng nhập thành công");
+                    khachhang.LastLogin=DateTime.Now;
+					_context.Update(khachhang);
+					await _context.SaveChangesAsync();
+					_notyfService.Success("Đăng nhập thành công");
                     return RedirectToAction("Dashboard", "Accounts");
                 }
                 else
@@ -262,35 +328,28 @@ namespace HiepStore.Controllers
                             {
                                 FirstName = user.first_name,
                                 LastName = user.last_name,
-                                //Phone = user.Phone.Trim().ToLower(),
                                 Email = user.email.Trim().ToLower(),
-                                //Password = (taikhoan.Password + salt.Trim()).ToMD5(),
+                                LocationId = 1,//vì không lấy dc địa chỉ nên gán tạm địa chỉ, customer có thể tự sửa, hoặc admin có thể sửa lại
                                 IsActive = true,
-                                CreatedAt = DateTime.Now
+                                CreatedAt = DateTime.Now,
+                                LastLogin= DateTime.Now
                             };
-                            try
-                            {
-                                _context.Add(customer);
-                                await _context.SaveChangesAsync();
-                                //Lưu Session CustomerId
-                                HttpContext.Session.SetString("CustomerId", customer.Id.ToString());
+                            _context.Add(customer);
+                            await _context.SaveChangesAsync();
+                            //Lưu Session CustomerId
+                            HttpContext.Session.SetString("CustomerId", customer.Id.ToString());
 
-                                //Identity
-                                //var claims = new List<Claim>
-                                //{
-                                //    new Claim(ClaimTypes.Name,customer.FirstName),
-                                //    new Claim("CustomerId", customer.Id.ToString())
-                                //};
-                                //ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
-                                //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                                //await HttpContext.SignInAsync(claimsPrincipal);
-                                _notyfService.Success("Đăng nhập với facebook thành công");
-                                return RedirectToAction("Dashboard", "Accounts");
-                            }
-                            catch
-                            {
-                                return RedirectToAction("login", "Accounts");
-                            }
+                            //Identity
+                            //var claims = new List<Claim>
+                            //{
+                            //    new Claim(ClaimTypes.Name,customer.FirstName),
+                            //    new Claim("CustomerId", customer.Id.ToString())
+                            //};
+                            //ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
+                            //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                            //await HttpContext.SignInAsync(claimsPrincipal);
+                            _notyfService.Success("Đăng nhập với facebook thành công");
+							return RedirectToAction("Dashboard", "Accounts");
                         }
                         else
                         {
@@ -313,6 +372,91 @@ namespace HiepStore.Controllers
 
         }
 
+
+        public async Task LoginWithGoogle()
+        {
+            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("GoogleResponse", "Accounts")
+            });
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var claims = result.Principal.Identities
+                .FirstOrDefault().Claims.Select(claim => new
+                {
+                    claim.Type,
+                    claim.Value
+                });
+            //var strJson = Json(claims);
+            var firstName = claims
+                .Where(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname")
+                .Select(x => x.Value)
+                .FirstOrDefault();
+
+            var lastName = claims
+                .Where(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname")
+                .Select(x => x.Value)
+                .FirstOrDefault();
+            
+            var email = claims
+                .Where(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")
+                .Select(x => x.Value)
+                .FirstOrDefault();
+
+            var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.Email.Trim() == email);
+            //kiểm tra xem email lấy từ tk google đã tồn tại trong database chưa.
+            //nếu rồi thì đăng nhập,
+            //nếu chưa thì tiến hàng đăng kí(insert thông tin tài khoản google vào table customers)
+            if (khachhang != null)
+            {
+                //lưu Session mã khách hàng
+                HttpContext.Session.SetString("CustomerId", khachhang.Id.ToString());
+				khachhang.LastLogin = DateTime.Now;
+				_context.Update(khachhang);
+				await _context.SaveChangesAsync();
+				_notyfService.Success("Đăng nhập thành công");
+                return RedirectToAction("Dashboard", "Accounts");
+            }
+            else
+            {
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        Customer customer = new Customer
+                        {
+                            FirstName = firstName,
+                            LastName = lastName,
+                            //Phone = user.Phone.Trim().ToLower(),
+                            Email = email.ToLower(),
+                            IsActive = true,
+                            CreatedAt = DateTime.Now,
+                            LastLogin= DateTime.Now
+                        };
+                            _context.Add(customer);
+                            await _context.SaveChangesAsync();
+                            //Lưu Session CustomerId
+                            HttpContext.Session.SetString("CustomerId", customer.Id.ToString());
+
+                            _notyfService.Success("Đăng nhập với facebook thành công");
+                            return RedirectToAction("Dashboard", "Accounts");
+                    }
+                    else
+                    {
+                        return RedirectToAction("login", "Accounts");
+                    }
+                }
+                catch
+                {
+                    return RedirectToAction("login", "Accounts");
+                }
+
+            }
+        }
 
         [HttpGet]
         [Route("dang-xuat.html", Name = "DangXuat")]

@@ -1,0 +1,58 @@
+﻿@model HiepStore.ModelViews.XemDonHang
+@{
+    var total = Model.ChiTietDonHang.Sum(x => x.TotalMoney).Value.ToString("#,##0");
+}
+@foreach (var item in Model.ChiTietDonHang)
+{
+    <tr>
+    <td width="65">
+            <img src="~/assets/images/products/@item.Product.Thumb" class="img-xs border">
+    </td>
+    <td>
+            <p class="title mb-0">@item.Product.Name</p>
+            <var class="price text-muted">@item.Product.Discount</var>
+    </td>
+        <td> Số lượng <br> @item.Amount </td>
+        <td> Thành tiền <br> @item.TotalMoney.Value.ToString("#,##0") VNĐ </td>
+    <td width="200">
+        <a asp-action="Detail" asp-controller="Product" asp-route-Alias="@item.Product.Alias" class="btn btn-outline-primary">Xem sản phẩm</a>
+    </td>
+</tr>
+
+}
+
+
+
+@*<h3>Thông tin đơn hàng: #@Model.DonHang.OrderId</h3>
+<br />
+<p>Ngày đặt hàng: @Model.DonHang.OrderDate</p>
+<p>Trạng thái đơn hàng: @Model.DonHang.TransactStatus.Status</p>
+<p>Tổng giá trị đơn hàng: <strong> @total VNĐ</strong></p>
+<p>Ngày ship hàng: @Model.DonHang.ShipDate</p>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <tbody>
+            <tr>
+                <th>#</th>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+            </tr>
+
+            @foreach (var item in Model.ChiTietDonHang)
+            {
+                <tr>
+                    <td>@item.ProductId</td>
+                    <td>@item.Product.ProductName</td>
+                    <td>@item.Amount</td>
+                    <td>@item.Product.ProductName</td>
+                    <td>@item.TotalMoney.Value.ToString("#,##0") VNĐ</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+*@
+

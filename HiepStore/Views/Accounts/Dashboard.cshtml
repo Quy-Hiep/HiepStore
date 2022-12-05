@@ -1,182 +1,255 @@
 ﻿@model HiepStore.Models.Customer
 
 @{
-    ViewData["Title"] = "Dashboard";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    List<Order> DanhSachDonHang = ViewBag.DonHang;
-    var total = DanhSachDonHang.Sum(x => x.TotalMoney).ToString("#,##0");
-    HiepStore.ModelViews.ChangePasswordViewModel changePassword = new HiepStore.ModelViews.ChangePasswordViewModel();
+	ViewData["Title"] = "Dashboard";
+	List<Order> DanhSachDonHang = ViewBag.DonHang;
+	var total = DanhSachDonHang.Sum(x => x.TotalMoney).ToString("#,##0");
+	var recentOrders = ViewBag.recentOrders;
+	var favoriteProduct = ViewBag.favoriteProduct;
+	HiepStore.ModelViews.ChangePasswordViewModel changePassword = new HiepStore.ModelViews.ChangePasswordViewModel();
 }
-<style type="text/css">
-    /*  15. My Account
-    /*----------------------------------------*/
-    .myaccount-tab-trigger {
-        display: block;
-    }
-
-        .myaccount-tab-trigger li {
-            display: block;
-        }
-
-            .myaccount-tab-trigger li:first-child {
-                margin-top: -1px;
-            }
-
-            .myaccount-tab-trigger li a {
-                border: 1px solid #444444;
-                display: block;
-                background: #010101;
-                color: #fff;
-                text-transform: uppercase;
-                font-weight: 600;
-                padding: 10px 20px;
-            }
-
-                .myaccount-tab-trigger li a.active {
-                    background: #bac34e;
-                    border-color: #bac34e;
-                    color: #fff;
-                }
-
-                    .myaccount-tab-trigger li a.active:hover {
-                        color: #fff;
-                    }
-
-                .myaccount-tab-trigger li a:hover {
-                    color: #bac34e;
-                }
-
-    .myaccount-tab-content {
-        border: 1px solid #dee2e6;
-        padding: 30px;
-        -webkit-transition: all 0.3s ease 0s;
-        -o-transition: all 0.3s ease 0s;
-        transition: all 0.3s ease 0s;
-    }
-
-    .myaccount-dashboard p {
-        margin-bottom: 20px;
-    }
-
-        .myaccount-dashboard p:last-child {
-            margin-bottom: 0;
-        }
-
-    .myaccount-orders .table {
-        margin-bottom: 0;
-    }
-
-        .myaccount-orders .table .account-order-id:hover {
-            color: #bac34e;
-        }
-
-        .myaccount-orders .table.table-hover tbody tr:hover {
-            --bs-table-accent-bg: rgba(0, 0, 0, .02);
-            color: var(--bs-table-hover-color);
-        }
-
-        .myaccount-orders .table td,
-        .myaccount-orders .table th {
-            vertical-align: middle;
-            text-align: center;
-        }
-
-    .myaccount-orders .small-title {
-        margin-bottom: 15px;
-    }
-
-    /* ---My Account Form Style--- */
-    .myaccount-form,
-    .myaccount-form-boxed {
-        padding: 30px;
-        border-radius: 0;
-        border: 1px solid #dee2e6;
-    }
 
 
-        .myaccount-form .myaccount-form-inner,
-        .myaccount-form-boxed .myaccount-form-inner {
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-flex-wrap: wrap;
-            -ms-flex-wrap: wrap;
-            flex-wrap: wrap;
-            -webkit-box-pack: justify;
-            -webkit-justify-content: space-between;
-            -ms-flex-pack: justify;
-            justify-content: space-between;
-            margin-top: -20px;
-        }
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+	<div class="container">
+
+		<div class="row">
+			<aside class="col-md-3">
+				<nav class="list-group">
+					<a class="list-group-item active" data-bs-toggle="tab" id="account-dashboard-tab" href="#account-dashboard"> Tài khoản của tôi  </a>
+					<a class="list-group-item" data-bs-toggle="tab" href="#account-address"> Địa chỉ của tôi </a>
+					<a class="list-group-item" data-bs-toggle="tab" href="#account-orders"> Đơn hàng của tôi </a>
+					<a class="list-group-item" data-bs-toggle="tab" href="#account-wishlist"> Sản phẩm yêu thích </a>
+					<a class="list-group-item" data-bs-toggle="tab" href="#account-Setting"> Cài đặt tài khoản </a>
+					<a class="list-group-item" asp-action="Logout" asp-controller="Accounts"> Đăng xuất </a>
+
+				</nav>
+			</aside> <!-- col.// -->
+			<main class="col-md-9">
+				<div class="tab-content">
+					<!-- account-dashboard -->
+					<div class="tab-pane show active" id="account-dashboard">
+						<article class="card mb-3">
+							<div class="card-body">
+
+								<figure class="icontext">
+									<div class="icon">
+										<img class="rounded-circle img-sm border" src="~/assets/images/avatars/@Model.Avatar">
+									</div>
+									<div class="text">
+										<strong>@Model.LastName @Model.FirstName</strong> <br>
+										<p class="mb-2"> @Model.Email  </p>
+										<a href="#account-Setting" class="btn btn-light btn-sm">Chỉnh sửa</a>
+									</div>
+								</figure>
+								<hr>
+								<p>
+									<i class="fa fa-map-marker text-muted"></i> &nbsp; Địa chỉ:
+									<br>
+									@Model.Address &nbsp
+									<a href="#account-Setting" class="btn-link"> Chỉnh sửa</a>
+								</p>
 
 
-            .myaccount-form .myaccount-form-inner .single-input,
-            .myaccount-form-boxed .myaccount-form-inner .single-input {
-                -webkit-box-flex: 0;
-                -webkit-flex: 0 0 100%;
-                -ms-flex: 0 0 100%;
-                flex: 0 0 100%;
-                max-width: 100%;
-                margin-top: 20px;
-            }
 
-                .myaccount-form .myaccount-form-inner .single-input.single-input-half,
-                .myaccount-form-boxed .myaccount-form-inner .single-input.single-input-half {
-                    -webkit-box-flex: 0;
-                    -webkit-flex: 0 0 calc(50% - 15px);
-                    -ms-flex: 0 0 calc(50% - 15px);
-                    flex: 0 0 calc(50% - 15px);
-                    max-width: calc(50% - 15px);
-                }
+								<article class="card-group card-stat">
+									<figure class="card bg">
+										<div class="p-3">
+											<h4 class="title">@total</h4>
+											<span>Đơn hàng</span>
+										</div>
+									</figure>
+									<figure class="card bg">
+										<div class="p-3">
+											<h4 class="title">5</h4>
+											<span>Sản phẩm yêu thích</span>
+										</div>
+									</figure>
+									<figure class="card bg">
+										<div class="p-3">
+											<h4 class="title">2</h4>
+											<span>Chờ giao hàng</span>
+										</div>
+									</figure>
+									<figure class="card bg">
+										<div class="p-3">
+											<h4 class="title">5</h4>
+											<span>Đơn hàng thành công</span>
+										</div>
+									</figure>
+								</article>
 
 
-                .myaccount-form .myaccount-form-inner .single-input label,
-                .myaccount-form-boxed .myaccount-form-inner .single-input label {
-                    margin-bottom: 8px;
-                    display: block;
-                }
+							</div> <!-- card-body .// -->
+						</article> <!-- card.// -->
 
-                .myaccount-form .myaccount-form-inner .single-input input,
-                .myaccount-form .myaccount-form-inner .single-input select,
-                .myaccount-form .myaccount-form-inner .single-input textarea,
-                .myaccount-form-boxed .myaccount-form-inner .single-input input,
-                .myaccount-form-boxed .myaccount-form-inner .single-input select,
-                .myaccount-form-boxed .myaccount-form-inner .single-input textarea {
-                    padding: 0 15px;
-                    border: 1px solid #dee2e6;
-                    height: 40px;
-                    width: 100%;
-                }
+						<article class="card  mb-3">
+							<div class="card-body">
+								<h5 class="card-title mb-4">Đặt gần đây </h5>
+								<div class="row">
+									@foreach (var item in recentOrders)
+									{
+										<div class="col-md-6">
+											<figure class="itemside  mb-3">
+												<div class="aside"><img src="~/assets/images/products/@item.Thumb" class="border img-sm"></div>
+												<figcaption class="info">
+													<time class="text-muted"><i class="fa fa-calendar-alt"></i> 12.10.2022</time>
+													<p>@item.Name </p>
+													<span class="text-success">Đặt hàng thành công </span>
+												</figcaption>
+											</figure>
+										</div> <!-- col.// -->
+									}
+								</div> <!-- row.// -->
 
-                    .myaccount-form .myaccount-form-inner .single-input input:first-child,
-                    .myaccount-form-boxed .myaccount-form-inner .single-input input:first-child {
-                        margin-top: 20px;
-                    }
+								<a href="#" class="btn btn-outline-primary btn-block"> Xem tất cả <i class="fa fa-chevron-down"></i>  </a>
+							</div> <!-- card-body .// -->
+						</article> <!-- card.// -->
 
-                .myaccount-form .myaccount-form-inner .single-input .checkbox-input,
-                .myaccount-form-boxed .myaccount-form-inner .single-input .checkbox-input {
-                    display: inline-block;
-                }
+					</div> <!-- account-dashboard end.// -->
+					<!-- account-address -->
+					<div class="tab-pane" id="account-address">
+						<a href="#" class="btn btn-light mb-3"> <i class="fa fa-plus"></i> Thêm Địa chỉ mới </a>
+						<div class="row">
+							<div class="col-md-6">
+								<article class="box mb-4">
+									<h6>@Model.Address</h6> <!--tỉnh(thành phố trực thuộc trung ương), Huyện(Quận)-->
+									<p>@Model.Address  </p> <!--Số nhà, đường, xóm(khu phố), thôn(ấp hoặc tổ), xã(Phường)-->
+									<a href="#" class="btn btn-light disabled"> <i class="fa fa-check"></i> Mặc định</a> <a href="#" class="btn btn-light"> <i class="fa fa-pen"></i> </a>   <a href="#" class="btn btn-light"> <i class="text-danger fa fa-trash"></i></a>
+								</article>
+							</div>  <!-- col.// -->
+						</div> <!-- row.// -->
+					</div> <!-- account-address end.// -->
+					<!-- account-orders -->
+					<div class="tab-pane" id="account-orders">
+						@foreach (var item in DanhSachDonHang)
+						{
+							<article class="card mb-4">
+								<header class="card-header">
+									<a href="#" class="float-right"> <i class="fa fa-print"></i> In đơn hàng</a>
+									<strong class="d-inline-block mr-3">Mã hàng: @item.Id</strong>
+									<span>Order Date: @item.OrderDate</span>
+								</header>
+								<div class="card-body">
+									<div class="row">
+										<div class="col-md-8">
+											<h6 class="text-muted">Vận chuyển tới</h6>
+											<p>
+												@item.Customer.LastName @item.Customer.FirstName<br>
+												Phone: @item.Customer.Phone Email: @item.Customer.Email <br>
+												Location: @item.Customer.Address <br>
+											</p>
+										</div>
+										<div class="col-md-4">
+											<h6 class="text-muted">Thanh toán</h6>
+											<span class="text-success">
+												<i class="fab fa-lg fa-cc-visa"></i>
+												Visa  **** 4216
+											</span>
+											<p>
+												<span class="b">Tổng tiền:  @item.TotalMoney.ToString("#,##0") VNĐ </span>
+											</p>
+											<a href="javascript:void(0)" class="xemdonhang btn btn-outline-primary" data-madonhang="@item.Id">Xem sản phẩm trong đơn hàng</a>
+										</div>
+									</div> <!-- row.// -->
+								</div> <!-- card-body .// -->
+								<div class="table-responsive">
+									<table class="table table-hover">
+										<tbody id="records_table">
+											<!--Xem các sản phẩm trong đơn hàng(chi tiết đơn hàng)-->
+										</tbody>
+									</table>
+								</div> <!-- table-responsive .end// -->
+							</article> <!-- card order-item .// -->
+						}
+					</div><!-- account-orders end.// -->
+					<!-- account-wishlist -->
+					<div class="tab-pane" id="account-wishlist">
+						<article class="card">
+							<div class="card-body">
+								<div class="row">
+									@foreach (var item in favoriteProduct)
+									{
+										<div class="col-md-6">
+											<figure class="itemside mb-4">
+												<div class="aside"><img src="~/assets/images/products/@item.Thumb" class="border img-md"></div>
+												<figcaption class="info">
+													<a href="#" class="title">@item.Name</a>
+													<p class="price mb-2">@item.Discount</p>
+													<a href="#" class="btn btn-secondary btn-sm"> Thêm vào giỏ hàng </a>
+													<a href="#" class="btn btn-danger btn-sm" data-toggle="tooltip" title="" data-original-title="Xóa khỏi Danh sách yêu thích"> <i class="fa fa-times"></i> </a>
+												</figcaption>
+											</figure>
+										</div> <!-- col.// -->
+									}
+								</div> <!-- row .//  -->
 
-                    .myaccount-form .myaccount-form-inner .single-input .checkbox-input label,
-                    .myaccount-form-boxed .myaccount-form-inner .single-input .checkbox-input label {
-                        display: inline-block;
-                    }
+							</div> <!-- card-body.// -->
+						</article>
+					</div><!-- account-wishlist end.// -->
+					<!-- account-Setting -->
+					<div class="tab-pane" id="account-Setting">
+						<div class="card">
+							<div class="card-body">
+								<form class="row" asp-action="EditCustomer" asp-controller="Accounts" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+									<div class="col-md-9">
+										<div class="form-row">
+											<div class="col form-group">
+												<label>Tên</label>
+												<input type="text" asp-for="FirstName" class="form-control" placeholder="Tên" value="@Model.FirstName">
+												<span asp-validation-for="FirstName" class="text-danger"></span>
+											</div> <!-- form-group end.// -->
+											<div class="col form-group">
+												<label>Họ</label>
+												<input type="text" asp-for="LastName" class="form-control" placeholder="Họ" value="@Model.LastName">
+												<span asp-validation-for="LastName" class="text-danger"></span>
+											</div> <!-- form-group end.// -->
+										</div> <!-- form-row.// -->
+										<div class="form-row">
+											<div class="form-group col-md-6">
+												<label>Email</label>
+												<input type="email" asp-for="Email" class="form-control" placeholder="Địa chỉ Email" value="@Model.Email">
+												<span asp-validation-for="Email" class="text-danger"></span>
+											</div> <!-- form-group end.// -->
+											<div class="form-group col-md-6">
+												<label>Điện Thoại</label>
+												<input type="tel" asp-for="Phone" class="form-control" placeholder="Số điện thoại" value="@Model.Phone">
+												<span asp-validation-for="Phone" class="text-danger"></span>
+											</div> <!-- form-group end.// -->
+										</div> <!-- form-row.// -->
 
-            .myaccount-form .myaccount-form-inner a,
-            .myaccount-form-boxed .myaccount-form-inner a {
-                font-size: 13px;
-            }
+										<button type="submit" class="btn btn-primary">Lưu</button>
+										<div class="list-group d-inline">
+											<a class="btn btn-light" data-bs-toggle="tab" href="#account-change-password">Đổi mật khẩu</a>
+										</div>
+										<br>
 
-                .myaccount-form .myaccount-form-inner a:hover,
-                .myaccount-form-boxed .myaccount-form-inner a:hover {
-                    color: #bac34e;
-                }
+									</div> <!-- col.// -->
+									<div class="col-md">
+										<img src="~/assets/images/avatars/@Model.Avatar" class="img-md rounded-circle border" id="previewImg">
+										<input name="fThumb" type="file" class="form-control-file" asp-for="Avatar" onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])" />
+										<span asp-validation-for="Avatar" class="text-danger"></span>
+									</div>  <!-- col.// -->
+								</form>
+							</div> <!-- card-body.// -->
+						</div> <!-- card .// -->
+					</div> <!-- account-Setting end.// -->
+					<!-- account-ChangePassword -->
+					<div class="tab-pane" id="account-change-password">
+						@await Html.PartialAsync("_ChangePasswordPartialView", changePassword)
+					</div> <!-- account-ChangePassword end.// -->
 
-    /*----------------------------------------*/
+				</div>
+			</main> <!-- col.// -->
+		</div>
 
-</style>
+	</div> <!-- container .//  -->
+</section>
+<!-- Bootstrap5 CDN JavaScript Bundle with Popper-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+@*
 <main class="main-content">
     <div class="account-page-area section-space-y-axis-100">
         <div class="container">
@@ -285,6 +358,8 @@
 
 <!-- Bootstrap5 CDN JavaScript Bundle with Popper-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+*@
+
 
 @section Scripts{
     <script>
@@ -292,7 +367,7 @@
             $(".xemdonhang").click(function () {
                 var madonhang = $(this).attr("data-madonhang")
                 $.ajax({
-                    url: '/DonHang/Details',
+                    url: '/Order/Details',
                     datatype: "json",
                     type: "POST",
                     data: { id: madonhang },

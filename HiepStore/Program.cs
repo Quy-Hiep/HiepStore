@@ -1,7 +1,9 @@
 ﻿using AspNetCoreHero.ToastNotification;
 using HiepStore.Models;
 using HiepStore.ModelViews;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
@@ -47,15 +49,28 @@ services.AddNotyf(config =>
 //        googleOptions.CallbackPath = "/signin-google";
 
 //    });
-    //.AddFacebook(facebookOptions =>
-    //{
-    //    // Đọc cấu hình
-    //    IConfigurationSection facebookAuthNSectionn = configuration.GetSection("Authentication:Facebook");
-    //    facebookOptions.AppId = facebookAuthNSection["AppId"];
-    //    facebookOptions.AppSecret = facebookAuthNSection["AppSecret"];
-    //    // Thiết lập đường dẫn Facebook chuyển hướng đến
-    //    //facebookOptions.CallbackPath = "/dang-nhap-facebook";
-    //});
+//.AddFacebook(facebookOptions =>
+//{
+//    // Đọc cấu hình
+//    IConfigurationSection facebookAuthNSectionn = configuration.GetSection("Authentication:Facebook");
+//    facebookOptions.AppId = facebookAuthNSection["AppId"];
+//    facebookOptions.AppSecret = facebookAuthNSection["AppSecret"];
+//    // Thiết lập đường dẫn Facebook chuyển hướng đến
+//    //facebookOptions.CallbackPath = "/dang-nhap-facebook";
+//});
+
+services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+           .AddCookie()
+           .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+           {
+               options.ClientId = configuration["Authentication:Google:ClientId"];
+               options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+               options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+           });
 
 var appSettings = configuration.GetSection("AppSettings");
 services.Configure<AppSettings>(appSettings);

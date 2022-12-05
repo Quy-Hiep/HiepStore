@@ -183,11 +183,12 @@
                         </div> <!-- row.// -->
                     </article> <!-- card-product .// -->
                 }
-
+                <!--Phân trang-->
                 <nav class="mb-4" aria-label="Page navigation sample">
                     Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) của @Model.PageCount
                     <pager class="pager-container" list="@Model" options="@PagedListRenderOptions.Bootstrap4PageNumbersPlusPrevAndNext" asp-controller="Product" asp-action="ProductCategory" asp-route-Alias="@category.Alias" />
                 </nav>
+                <!--Phân trang end.//-->
 
 
                 <div class="box text-center">

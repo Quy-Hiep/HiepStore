@@ -38,7 +38,7 @@ namespace HiepStore.Controllers
             if (!string.IsNullOrEmpty(SearchString))
             {
                 //lấy danh sách sản phẩm theo từ khóa tìm kiếm
-                lstProduct = _context.Products.Where(n => n.IsDeleted == false && n.Name.Contains(SearchString));
+                lstProduct = _context.Products.Where(n => n.IsDeleted == false && n.Name.Contains(SearchString) || n.Category.Name.Contains(SearchString) || n.Brand.Name.Contains(SearchString));
             }
             else
             {
