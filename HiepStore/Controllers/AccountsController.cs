@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Net;
+using System.IO;
 
 namespace HiepStore.Controllers
 {
@@ -385,13 +387,12 @@ namespace HiepStore.Controllers
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            var claims = result.Principal.Identities
-                .FirstOrDefault().Claims.Select(claim => new
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
                 {
                     claim.Type,
                     claim.Value
                 });
-            //var strJson = Json(claims);
+            //return Json(claims);
             var firstName = claims
                 .Where(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname")
                 .Select(x => x.Value)
@@ -407,10 +408,15 @@ namespace HiepStore.Controllers
                 .Select(x => x.Value)
                 .FirstOrDefault();
 
+            var avatar = claims
+                .Where(x => x.Type == "urn:google:picture")
+                .Select(x => x.Value)
+                .FirstOrDefault();
+
             var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.Email.Trim() == email);
             //kiểm tra xem email lấy từ tk google đã tồn tại trong database chưa.
             //nếu rồi thì đăng nhập,
-            //nếu chưa thì tiến hàng đăng kí(insert thông tin tài khoản google vào table customers)
+            //nếu chưa thì tiến hành đăng kí(insert thông tin tài khoản google vào table customers)
             if (khachhang != null)
             {
                 //lưu Session mã khách hàng
@@ -418,7 +424,7 @@ namespace HiepStore.Controllers
 				khachhang.LastLogin = DateTime.Now;
 				_context.Update(khachhang);
 				await _context.SaveChangesAsync();
-				_notyfService.Success("Đăng nhập thành công");
+				_notyfService.Success("Đăng nhập với google thành công");
                 return RedirectToAction("Dashboard", "Accounts");
             }
             else
@@ -427,23 +433,31 @@ namespace HiepStore.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        Customer customer = new Customer
-                        {
-                            FirstName = firstName,
-                            LastName = lastName,
-                            //Phone = user.Phone.Trim().ToLower(),
-                            Email = email.ToLower(),
-                            IsActive = true,
-                            CreatedAt = DateTime.Now,
-                            LastLogin= DateTime.Now
-                        };
-                            _context.Add(customer);
-                            await _context.SaveChangesAsync();
-                            //Lưu Session CustomerId
-                            HttpContext.Session.SetString("CustomerId", customer.Id.ToString());
+						//tiến hành đăng kí
+                        Customer customer = new Customer();
+                        customer.FirstName = firstName;
+                        customer.LastName = lastName;
+                        customer.Email = email.ToLower();
+                        customer.IsActive = true;
+                        customer.CreatedAt = DateTime.Now;
+                        customer.LastLogin = DateTime.Now;
 
-                            _notyfService.Success("Đăng nhập với facebook thành công");
-                            return RedirectToAction("Dashboard", "Accounts");
+						string imageName = Utilities.SEOUrl(firstName) + ".png";
+						//string strPath = "D:/workspace/ASP.NET/HiepStore/HiepStore/wwwroot/assets/images/avatars/" + imageName;
+						string strPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "avatars", imageName);
+						WebClient wc = new WebClient();
+						byte[] bytes = wc.DownloadData(avatar);
+						MemoryStream ms = new MemoryStream(bytes);
+						System.Drawing.Image img = System.Drawing.Image.FromStream(ms);
+						img.Save(strPath);
+                        customer.Avatar = imageName;
+						_context.Add(customer);
+                        await _context.SaveChangesAsync();
+                        //Lưu Session CustomerId
+                        HttpContext.Session.SetString("CustomerId", customer.Id.ToString());
+
+                        _notyfService.Success("Đăng kí với google thành công");
+                        return RedirectToAction("Dashboard", "Accounts");
                     }
                     else
                     {
