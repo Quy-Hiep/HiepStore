@@ -22,5 +22,11 @@ namespace HiepStore.Models
         public string? MetaKey { get; set; }
         public string? MetaDesc { get; set; }
         public int? Views { get; set; }
+        public int? BrandId { get; set; }
+        public int? ProductId { get; set; }
+
+        public virtual Brand? Brand { get; set; }
+        public virtual Category? Category { get; set; }
+        public virtual Product? Product { get; set; }
     }
 }

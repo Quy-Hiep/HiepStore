@@ -493,6 +493,8 @@ namespace HiepStore.Models
                     .HasMaxLength(255)
                     .HasColumnName("author");
 
+                entity.Property(e => e.BrandId).HasColumnName("brand_id");
+
                 entity.Property(e => e.CategoryId).HasColumnName("category_id");
 
                 entity.Property(e => e.Contents).HasColumnName("contents");
@@ -517,6 +519,8 @@ namespace HiepStore.Models
                     .HasMaxLength(255)
                     .HasColumnName("meta_key");
 
+                entity.Property(e => e.ProductId).HasColumnName("product_id");
+
                 entity.Property(e => e.Tags).HasColumnName("tags");
 
                 entity.Property(e => e.Thumb)
@@ -528,6 +532,21 @@ namespace HiepStore.Models
                     .HasColumnName("title");
 
                 entity.Property(e => e.Views).HasColumnName("views");
+
+                entity.HasOne(d => d.Brand)
+                    .WithMany(p => p.Posts)
+                    .HasForeignKey(d => d.BrandId)
+                    .HasConstraintName("fk_posts_brands");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.Posts)
+                    .HasForeignKey(d => d.CategoryId)
+                    .HasConstraintName("fk_posts_categories");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Posts)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("fk_posts_products");
             });
 
             modelBuilder.Entity<Product>(entity =>
