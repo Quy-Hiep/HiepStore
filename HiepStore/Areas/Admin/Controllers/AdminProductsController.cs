@@ -203,9 +203,6 @@ namespace HiepStore.Areas.Admin.Controllers
             }
             return RedirectToAction(nameof(Index));
             //}
-            ViewData["DanhMuc"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-            ViewData["ThuongHieu"] = new SelectList(_context.Brands, "Id", "Name", product.BrandId);
-            ViewData["LoaiSanPham"] = new SelectList(_context.ProductTypes, "Id", "Name", product.TypeId);
             return View(product);
         }
 

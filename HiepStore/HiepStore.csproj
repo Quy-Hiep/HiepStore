@@ -30,6 +30,7 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="wwwroot\Adminassets\images\avatars\" />
     <Folder Include="wwwroot\assets\images\avatars\" />
+    <Folder Include="wwwroot\assets\images\posts\" />
   </ItemGroup>
 
   <ItemGroup>

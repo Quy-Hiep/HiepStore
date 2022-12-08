@@ -30,6 +30,7 @@ namespace HiepStore.Models
         public virtual DbSet<ProductType> ProductTypes { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Shipper> Shippers { get; set; } = null!;
+        public virtual DbSet<Tag> Tags { get; set; } = null!;
         public virtual DbSet<TransactStatus> TransactStatuses { get; set; } = null!;
         public virtual DbSet<Ward> Wards { get; set; } = null!;
 
@@ -521,7 +522,9 @@ namespace HiepStore.Models
 
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
 
-                entity.Property(e => e.Tags).HasColumnName("tags");
+                entity.Property(e => e.Subtitle).HasColumnName("subtitle");
+
+                entity.Property(e => e.TagsId).HasColumnName("tags_id");
 
                 entity.Property(e => e.Thumb)
                     .HasMaxLength(255)
@@ -532,6 +535,11 @@ namespace HiepStore.Models
                     .HasColumnName("title");
 
                 entity.Property(e => e.Views).HasColumnName("views");
+
+                entity.HasOne(d => d.Account)
+                    .WithMany(p => p.Posts)
+                    .HasForeignKey(d => d.AccountId)
+                    .HasConstraintName("fk_posts_accounts");
 
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Posts)
@@ -547,6 +555,11 @@ namespace HiepStore.Models
                     .WithMany(p => p.Posts)
                     .HasForeignKey(d => d.ProductId)
                     .HasConstraintName("fk_posts_products");
+
+                entity.HasOne(d => d.Tags)
+                    .WithMany(p => p.Posts)
+                    .HasForeignKey(d => d.TagsId)
+                    .HasConstraintName("fk_posts_tags");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -687,6 +700,17 @@ namespace HiepStore.Models
                 entity.Property(e => e.Shippername)
                     .HasMaxLength(150)
                     .HasColumnName("shippername");
+            });
+
+            modelBuilder.Entity<Tag>(entity =>
+            {
+                entity.ToTable("tags");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .HasColumnName("name");
             });
 
             modelBuilder.Entity<TransactStatus>(entity =>

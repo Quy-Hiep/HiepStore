@@ -5,6 +5,11 @@ namespace HiepStore.Models
 {
     public partial class Account
     {
+        public Account()
+        {
+            Posts = new HashSet<Post>();
+        }
+
         public int Id { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -21,5 +26,6 @@ namespace HiepStore.Models
         public DateTime? UpdatedAt { get; set; }
 
         public virtual Role? Role { get; set; }
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }

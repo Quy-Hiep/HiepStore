@@ -1,30 +1,41 @@
 ﻿@using PagedList.Core.Mvc
 @model PagedList.Core.IPagedList<HiepStore.Models.Post>
+
 @{
-    int CurrentPage = ViewBag.CurrentPage;
-    ViewData["Title"] = "Danh sách tin tức" + CurrentPage;
+    ViewData["Title"] = "Thùng rác";
 }
-
-
 <div class="page-header">
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
             <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
-            <span class="breadcrumb-item active">Danh sách tin tức : trang @CurrentPage</span>
+            <span class="breadcrumb-item active">Thùng rác</span>
         </nav>
     </div>
 </div>
 <div class="card">
     <div class="card-body">
         <div class="row m-b-30">
-            <div class="col-lg-8">
-                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminPosts" asp-action="Create"><i class="anticon anticon-plus-circle m-r-5"></i><span>Thêm tin</span></a>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-affix m-v-10">
+                            <i class="prefix-icon anticon anticon-search opacity-04"></i>
+                            <input id="keyword" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm sản phẩm">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!--lọc theo tab-->
+                    </div>
+                </div>
             </div>
+
             <div class="col-lg-4 text-right">
-                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminPosts" asp-action="Trash"><i class="anticon anticon-plus-circle m-r-5"></i><span>Thùng rác</span></a>
+                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminProducts" asp-action="Create"><i class="anticon anticon-plus-circle m-r-5"></i><span>Thêm</span></a>
+            </div>
+            <div class="col-lg-2 text-right">
+                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminProducts" asp-action="Trash"><i class="anticon anticon-plus-circle m-r-5"></i><span>Thùng rác</span></a>
             </div>
         </div>
-
         <div class="table-responsive">
             <table class="table table-hover e-commerce-table">
                 <thead>
@@ -113,20 +124,46 @@
                                     }
                                 </td>
                                 <td>
-                                    <a class="btn btn-primary btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPosts" asp-action="Details" asp-route-id="@item.Id">Xem</a>
-                                    <a class="btn btn-secondary btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPosts" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
-                                    <a class="btn btn-success btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPosts" asp-action="DeleteTrash" asp-route-id="@item.Id">Xóa</a>
+                                    <a class="btn btn-primary btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPosts" asp-action="ReTrash" asp-route-id="@item.Id">Khôi phục</a>
+                                    <a class="btn btn-success btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPosts" asp-action="Delete" asp-route-id="@item.Id">Xóa vĩnh viễn</a>
                                 </td>
                             </tr>
                         }
                     }
                 </tbody>
             </table>
-            <div aria-label="Page navigation example">
-                <ul class="pagination">
-                    <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminPosts" asp-action="Index" />
-                </ul>
-            </div>
         </div>
+        <div aria-label="Page navigation example">
+            <ul class="pagination">
+                <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminPosts" asp-action="Trash" />
+            </ul>
+        </div>
+
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#keyword").keyup(function () {
+                var strkeyword = $('#keyword').val();
+                $.ajax({
+                    url: '/Admin/Search/FindProduct/',
+                    datatype: "json",
+                    type: "POST",
+                    data: { keyword: strkeyword },
+                    async: true,
+                    success: function (results) {
+                        $("#records_table").html("");
+                        $("#records_table").html(results);
+                    },
+                    error: function (xhr) {
+                        alert('error');
+                    }
+                });
+            });
+        });
+    </script>
+
+}
+

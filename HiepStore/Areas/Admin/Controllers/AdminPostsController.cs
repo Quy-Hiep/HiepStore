@@ -2,7 +2,9 @@
 using HiepStore.Helpper;
 using HiepStore.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using PagedList.Core;
 
 namespace HiepStore.Areas.Admin.Controllers
@@ -21,7 +23,8 @@ namespace HiepStore.Areas.Admin.Controllers
         // GET: Admin/AdminTinDangs
         public IActionResult Index(int? page)
         {
-            var collection = _context.Posts.AsNoTracking().ToList();
+            var collection = _context.Posts.AsNoTracking()
+                .ToList();
             foreach (var item in collection)
             {
                 if (item.CreatedAt == null)
@@ -34,10 +37,12 @@ namespace HiepStore.Areas.Admin.Controllers
 
             var pageNumber = page == null || page <= 0 ? 1 : page.Value;
             var pageSize = 10;
-            var lsTinDangs = _context.Posts
+            var lsPosts = _context.Posts
+                .Include(n => n.Tags)
                 .AsNoTracking()
+                .Where(n=>n.IsDeleted==false)
                 .OrderBy(x => x.Id);
-            PagedList<Post> models = new PagedList<Post>(lsTinDangs, pageNumber, pageSize);
+            PagedList<Post> models = new PagedList<Post>(lsPosts, pageNumber, pageSize);
 
             ViewBag.CurrentPage = pageNumber;
             return View(models);
@@ -51,19 +56,37 @@ namespace HiepStore.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var tinDang = await _context.Posts
+            var post = await _context.Posts
+                .Include(n => n.Tags)
+                .Include(n => n.Category)
+                .Include(n => n.Brand)
+                .Include(n => n.Product)
+                .Include(n => n.Account)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (tinDang == null)
+            if (post == null)
             {
                 return NotFound();
             }
 
-            return View(tinDang);
+            return View(post);
         }
 
         // GET: Admin/AdminTinDangs/Create
         public IActionResult Create()
         {
+            List<Tag> listTag = _context.Tags.ToList();
+            List<Category> listCategory = _context.Categories.ToList();
+            List<Brand> listBrand = _context.Brands.ToList();
+            List<Product> listProduct = _context.Products.OrderByDescending(n=>n.Id).ToList();
+            SelectList selectListItemsTag = new SelectList(listTag, "Id", "Name");
+            SelectList selectListItemsCategory = new SelectList(listCategory, "Id", "Name");
+            SelectList selectListItemsBrand = new SelectList(listBrand, "Id", "Name");
+            SelectList selectListItemsProduct = new SelectList(listProduct, "Id", "Name");
+            ViewBag.listTag = selectListItemsTag;
+            ViewBag.listCategory = selectListItemsCategory;
+            ViewBag.listBrand = selectListItemsBrand;
+            ViewBag.listProduct = selectListItemsProduct;
+
             return View();
         }
 
@@ -74,26 +97,33 @@ namespace HiepStore.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Post post, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
-            if (ModelState.IsValid)
+            try
             {
                 //Xử lý thumb
                 if (fThumb != null)
                 {
                     string extension = Path.GetExtension(fThumb.FileName);
                     string imageName = Utilities.SEOUrl(post.Title) + extension;
-                    post.Thumb = await Utilities.UploadFile(fThumb, @"news", imageName.ToLower());
+                    post.Thumb = await Utilities.UploadFile(fThumb, @"posts", imageName.ToLower());
                 }
                 if (string.IsNullOrEmpty(post.Thumb)) post.Thumb = "default.jpg";
+
+                var strAccountId = HttpContext.Session.GetString("AccountId");
+                var taikhoan = _context.Accounts.AsNoTracking().SingleOrDefault(x => x.Id == Convert.ToInt32(strAccountId));
+                post.Author = taikhoan.LastName + " " + taikhoan.FirstName;
+                post.AccountId = taikhoan.Id;
                 post.Alias = Utilities.SEOUrl(post.Title);
                 post.CreatedAt = DateTime.Now;
-
 
                 _context.Add(post);
                 await _context.SaveChangesAsync();
                 _notyfService.Success("Thêm mới thành công");
                 return RedirectToAction(nameof(Index));
             }
-            return View(post);
+            catch (Exception)
+            {
+                return View(post);
+            }
         }
 
         // GET: Admin/AdminTinDangs/Edit/5
@@ -104,12 +134,16 @@ namespace HiepStore.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var tinDang = await _context.Posts.FindAsync(id);
-            if (tinDang == null)
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
             {
                 return NotFound();
             }
-            return View(tinDang);
+            ViewBag.listTag = new SelectList(_context.Tags, "Id", "Name");
+            ViewBag.listCategory = new SelectList(_context.Categories, "Id", "Name");
+            ViewBag.listBrand = new SelectList(_context.Brands, "Id", "Name");
+            ViewBag.listProduct = new SelectList(_context.Products, "Id", "Name");
+            return View(post);
         }
 
         // POST: Admin/AdminTinDangs/Edit/5
@@ -117,45 +151,81 @@ namespace HiepStore.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Post post, Microsoft.AspNetCore.Http.IFormFile fThumb)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, Title, Contents, Thumb, IsPublished, IsDeleted, Alias, CreatedAt, Author, AccountId, TagsId, CategoryId, IsHot, IsNewfeed, MetaKey, MetaDesc, Views, BrandId, ProductId, Subtitle")] Post post, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             if (id != post.Id)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            try
             {
-                try
+                //Xu ly Thumb
+                if (fThumb != null)
                 {
-                    //Xu ly Thumb
-                    if (fThumb != null)
-                    {
-                        string extension = Path.GetExtension(fThumb.FileName);
-                        string imageName = Utilities.SEOUrl(post.Title) + extension;
-                        post.Thumb = await Utilities.UploadFile(fThumb, @"news", imageName.ToLower());
-                    }
-                    if (string.IsNullOrEmpty(post.Thumb)) post.Thumb = "default.jpg";
-                    post.Alias = Utilities.SEOUrl(  post.Title);
+                    string extension = Path.GetExtension(fThumb.FileName);
+                    string imageName = Utilities.SEOUrl(post.Title) + extension;
+                    post.Thumb = await Utilities.UploadFile(fThumb, @"posts", imageName.ToLower());
+                }
+                if (string.IsNullOrEmpty(post.Thumb)) post.Thumb = "default.jpg";
+                post.Alias = Utilities.SEOUrl(post.Title);
 
-                    _context.Update(post);
-                    await _context.SaveChangesAsync();
-                    _notyfService.Success("Chỉnh sửa thành công");
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TinDangExists(post.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(post);
+                await _context.SaveChangesAsync();
+                _notyfService.Success("Chỉnh sửa thành công");
             }
-            return View(post);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TinDangExists(post.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                return View(post);
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        //Index bài viết trong Thùng rác
+        public ActionResult Trash(int page = 1)
+        {
+            var pageNumber = page;
+            var pageSize = 10;
+
+            List<Post> lsPosts = new List<Post>();
+            lsPosts = _context.Posts
+            .AsNoTracking()
+            .Include(n=>n.Tags)
+            .Where(n => n.IsDeleted == true)
+            .OrderBy(x => x.Id).ToList();
+
+
+            PagedList<Post> models = new PagedList<Post>(lsPosts.AsQueryable(), pageNumber, pageSize);
+            ViewBag.CurrentPage = pageNumber;
+
+            return View(models);
+        }
+
+        //Đưa bài viết vào thùng rác
+        public ActionResult DeleteTrash(int id)
+        {
+            Post post = _context.Posts.Find(id);
+            post.IsDeleted = true;
+            _context.Entry(post).State = EntityState.Modified;
+            _context.SaveChanges();
+            _notyfService.Success("Đưa vào thùng rác thành công");
+            return RedirectToAction("Index");
+        }
+
+        //khôi phục bài viết từ thùng rác
+        public ActionResult ReTrash(int Id)
+        {
+            Post post = _context.Posts.Find(Id);
+            post.IsDeleted = false;
+            _context.SaveChanges();
+            _notyfService.Success("Khôi phục thành công");
+            return RedirectToAction("Trash");
         }
 
         // GET: Admin/AdminTinDangs/Delete/5

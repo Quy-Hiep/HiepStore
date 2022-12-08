@@ -15,7 +15,7 @@ namespace HiepStore.Models
         public DateTime? CreatedAt { get; set; }
         public string? Author { get; set; }
         public int? AccountId { get; set; }
-        public string? Tags { get; set; }
+        public int? TagsId { get; set; }
         public int? CategoryId { get; set; }
         public bool IsHot { get; set; }
         public bool IsNewfeed { get; set; }
@@ -24,9 +24,12 @@ namespace HiepStore.Models
         public int? Views { get; set; }
         public int? BrandId { get; set; }
         public int? ProductId { get; set; }
+        public string? Subtitle { get; set; }
 
+        public virtual Account? Account { get; set; }
         public virtual Brand? Brand { get; set; }
         public virtual Category? Category { get; set; }
         public virtual Product? Product { get; set; }
+        public virtual Tag? Tags { get; set; }
     }
 }
