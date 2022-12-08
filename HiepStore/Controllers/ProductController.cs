@@ -22,6 +22,9 @@ namespace HiepStore.Controllers
                 .Include(x => x.Category)
                 .Include(x => x.Brand)
                 .Where(n => n.Id == Id).FirstOrDefault();
+            
+            ViewBag.lstPost = _context.Posts.Where(n => n.ProductId == Id);
+                
             return View(objProduct);
         }
 

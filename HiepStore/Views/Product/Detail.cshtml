@@ -113,31 +113,17 @@
 
             <aside class="col-md-4">
                 <div class="box">
-
-                    <h5 class="title-description">Các Video về sản phẩm này</h5>
-                    <article class="media mb-3">
-                        <a href="#"><img class="img-sm mr-3" src="~/assets/images/products/@Model.Thumb"></a>
-                        <div class="media-body">
-                            <h6 class="mt-0"><a href="#">Trên tay iphone 13 pro</a></h6>
-                            <p class="mb-2"> Cụm camera được nâng cấp, màu sắc mới, đặc biệt là màn hình 120Hz với phần notch được làm nhỏ gọn hơn chính là những điểm làm cho thu hút mọi sự chú ý trong năm nay. </p>
-                        </div>
-                    </article>
-                    <article class="media mb-3">
-                        <a href="#"><img class="img-sm mr-3" src="~/assets/images/products/@Model.Thumb"></a>
-                        <div class="media-body">
-                            <h6 class="mt-0"><a href="#">Đánh giá chi tiết iphone 13 pro sau 2 tuần</a></h6>
-                            <p class="mb-2"> Hiệu năng iPhone 13 Pro vẫn đứng hàng đầu trong thế giới smartphone · Màn hình: Kích thước 6.1 inch, độ phân giải 2.532 x 1.170 pixel, tấm nền Super Retina XDR </p>
-                        </div>
-                    </article>
-                    <article class="media mb-3">
-                        <a href="#"><img class="img-sm mr-3" src="~/assets/images/products/@Model.Thumb"></a>
-                        <div class="media-body">
-                            <h6 class="mt-0"><a href="#">drop test iphone 13 pro</a></h6>
-                            <p class="mb-2"> Đối với iPhone 13 Pro, chiếc điện thoại này không chỉ va vào lan can không chỉ một mà tới ba lần. Điều gây ngạc nhiên là mặt kính phía sau của iPhone đã bị nứt nhưng mặt trước không bị hề hấn gì.  </p>
-                        </div>
-                    </article>
-
-
+                    <h5 class="title-description">Bài viết liên quan</h5>
+                    @foreach (var item in ViewBag.lstPost)
+                    {
+                        <article class="media mb-3">
+                            <a href="#"><img class="img-sm mr-3" src="~/assets/images/posts/@item.Thumb"></a>
+                            <div class="media-body">
+                                <h6 class="mt-0"><a href="#">@item.Title</a></h6>
+                                <p class="mb-2">@item.Subtitle</p>
+                            </div>
+                        </article>
+                    }
                 </div> <!-- box.// -->
             </aside> <!-- col.// -->
         </div> <!-- row.// -->
