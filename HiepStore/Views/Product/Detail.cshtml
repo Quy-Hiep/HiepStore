@@ -3,8 +3,6 @@
     ViewBag.Title = "Detail";
 }
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 
 <section class="py-3 bg-light">
     <div class="container">
@@ -22,7 +20,7 @@
         <!-- ============================ ITEM DETAIL ======================== -->
         <div class="row">
             <aside class="col-md-6">
-                <div class="card">
+                <div class="card rounded">
                     <article class="gallery-wrap">
                         <div class="img-big-wrap">
                             <div> <a href="#"><img src="~/assets/images/products/@Model.Thumb"></a></div>
@@ -106,30 +104,50 @@
 <section class="section-name padding-y bg">
     <div class="container">
         <div class="row">
-            <div style="text-align: center" class="col-md-8">
+            <div style="text-align: center" class="col-md-8 box rounded">
                 <h5 style="text-align:center" class="title-description">ĐẶC ĐIỂM NỔI BẬT</h5>
                 @Html.Raw(Model.Description)
             </div> <!-- col.// -->
 
             <aside class="col-md-4">
-                <div class="box">
+                <div class="box rounded">
                     <h5 class="title-description">Bài viết liên quan</h5>
                     @foreach (var item in ViewBag.lstPost)
                     {
                         <article class="media mb-3">
                             <a href="#"><img class="img-sm mr-3" src="~/assets/images/posts/@item.Thumb"></a>
                             <div class="media-body">
-                                <h6 class="mt-0"><a href="#">@item.Title</a></h6>
-                                <p class="mb-2">@item.Subtitle</p>
+                                <h6 class="mt-0" style="display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;"><a href="#">@item.Title</a></h6>
+                                <p class="mb-2" style="display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;">@item.Subtitle</p>
                             </div>
                         </article>
+                        <hr/>
                     }
                 </div> <!-- box.// -->
             </aside> <!-- col.// -->
         </div> <!-- row.// -->
+        <div class="row mt-5">
+            <div class="col-12 px-md-5">
+                <h4 class="title-description text-center">Bình luận</h4>
+                <hr />
+                @{
+                    string url = $"/{Model.Alias}-{Model.Id}.html";
+                }
+                <div class="fb-comments" data-href="@url" data-width="100%" data-numposts="5"></div>
+            </div>
+        </div>
     </div> <!-- container .//  -->
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
+
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v15.0&appId=1316152032521412&autoLogAppEvents=1" nonce="jinPlSWl"></script>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 @section Scripts{
     <script>
         $(document).ready(function () {
@@ -160,25 +178,6 @@
                         }
                     });
                 });
-
-        @*$(".removecart").click(function () {
-                var productid = $(this).attr("data-productid");
-                $.ajax({
-                url: "api/cart/remove",
-                type: "POST",
-                dataType: "JSON",
-                data: { productID: productid },
-                success: function (result) {
-                if (result.success) {
-                loadHeaderCart();//Reload lai gio hang
-                location.reload();
-                }
-                },
-                error: function (rs) {
-                alert("Remove Cart Error !")
-                }
-                });
-                });*@
                 });
             function loadHeaderCart() {
                 //$('#miniCart').load("/AjaxContent/HeaderCart");
@@ -186,7 +185,6 @@
             }
         });
     </script>
-
 }
 
 
@@ -195,51 +193,39 @@
 
 <script type="text/javascript">
     $(function () {
-        //$("#addtocart").click(function () {
-        //    var model = {};
-        //    //lấy id sản phẩm
-        //    model.Id = @Model.Id;
-        //    // lấy số lượng đặt hàng
-        //    model.Quantity = $("#ipQuantity").val();
-        //    debugger;
-        //    $.ajax({
-        //        type: "POST",
-        //        url: '@Url.Action("AddToCart", "Cart")',
-        //        data: JSON.stringify(model),
-        //        dataType: "json",
-        //        contentType: "application/json; charset=utf-8",
-        //        success: function () {
-        //            alert("Thêm giỏ hàng thành công!")
-        //            $('#CartCount').text(Session["count"] + 1);
-        //        },
-        //        error: function () {
-        //            alert("Lỗi trong khi thêm vào giỏ hàng!");
-        //        }
-        //    });
-        //    return false;
-        //});
         var count = 1;
         $("#button-plus").click(function () {
-                if ($("#txtsoLuong").val() >= 20) {
+            if ($("#txtsoLuong").val() >= 10) {
                 $("#button-plus").attr("disabled", true);
-            } else {
+            } 
+            else {
                 count += 1;
-                    $("#txtsoLuong").val(count);
+                $("#txtsoLuong").val(count);
+                $("#button-minus").attr("disabled", false);
             }
         });
+
         $("#button-minus").click(function () {
-                if ($("#txtsoLuong").val() <= 1) {
+            if ($("#txtsoLuong").val() <= 1) {
                 $("#button-minus").attr("disabled", true);
-            } else {
+            }
+            else {
                 count -= 1;
                     $("#txtsoLuong").val(count);
+                $("#button-plus").attr("disabled", false);
             }
         });
-            $("#txtsoLuong").change(function () {
-                if ($("#txtsoLuong").val() <= 1 || $("#txtsoLuong").val() >= 20) {
-                alert("Nhập số lượng phù hợp !");
-                    $("#txtsoLuong").val("1");
+
+        $("#txtsoLuong").change(function () {
+            if ($("#txtsoLuong").val() < 1 || $("#txtsoLuong").val() > 10) 
+            {
+                alert("Số lượng tối đa mỗi lần thêm là 10 !");
+                $("#txtsoLuong").val(count);
             }
-        })
+            else
+            {
+                count = $("#txtsoLuong").val();
+            }
+        });
     });
 </script>

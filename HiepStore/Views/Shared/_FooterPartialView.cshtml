@@ -1,4 +1,54 @@
-﻿<footer class="section-footer bg-secondary">
+﻿<style>
+    .back-to-top {
+        position: fixed;
+        bottom: 75px;
+        right: 25px;
+        display: none;
+    }
+
+    .back-to-bottom {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        display: none;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 50) {
+                $('#back-to-top').fadeIn();
+            } else {
+                $('#back-to-top').fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        $('#back-to-top').click(function () {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 400);
+            return false;
+        });
+
+        $(window).scroll(function () {
+            if ($(this).scrollTop() < $('body,html').height()-1000) {
+                $('#back-to-bottom').fadeIn();
+			} else {
+                $('#back-to-bottom').fadeOut();
+			}
+		});
+		// scroll body to 20000px on click
+		$('#back-to-bottom').click(function () {
+			$('body,html').animate({
+				scrollTop: $('body,html').height()
+			}, 400);
+			return false;
+		});
+    });
+</script>
+<a id="back-to-bottom" href="#" class="btn btn-light btn-lg back-to-bottom" role="button"><i class="fas fa-chevron-down"></i></a>
+<a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button"><i class="fas fa-chevron-up"></i></a>
+<footer class="section-footer bg-secondary">
     <div class="container">
         <section class="footer-top padding-y-lg text-white">
             <div class="row">
