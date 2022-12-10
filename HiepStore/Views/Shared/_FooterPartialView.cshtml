@@ -37,7 +37,7 @@
                 $('#back-to-bottom').fadeOut();
 			}
 		});
-		// scroll body to 20000px on click
+		// scroll body to $('body,html').height() on click
 		$('#back-to-bottom').click(function () {
 			$('body,html').animate({
 				scrollTop: $('body,html').height()
