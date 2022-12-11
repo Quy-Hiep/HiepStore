@@ -171,7 +171,21 @@ namespace HiepStore.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string salt = Utilities.GetRandomKey();
+                    //var cus = await _context.Customers.FindAsync(taikhoan.Email);
+                    var cusEmail = _context.Customers.SingleOrDefault(x => x.Email == taikhoan.Email);
+                    var cusPhone = _context.Customers.SingleOrDefault(x => x.Phone == taikhoan.Phone);
+                    if (cusEmail != null)
+                    {
+                        _notyfService.Error("Email đã tồn tại trong hệ thống, vui lòng nhập email khác", 5);
+						return View(taikhoan);
+					}
+					if (cusPhone != null)
+					{
+						_notyfService.Error("Số điện thoại đã tồn tại trong hệ thống, vui lòng nhập số điện thoại khác khác", 5);
+						return View(taikhoan);
+					}
+
+					string salt = Utilities.GetRandomKey();
                     Customer khachhang = new Customer
                     {
                         FirstName = taikhoan.FirstName,
@@ -191,15 +205,6 @@ namespace HiepStore.Controllers
                         HttpContext.Session.SetString("CustomerId", khachhang.Id.ToString());
                         var taikhoanID = HttpContext.Session.GetString("CustomerId");
 
-                        //Identity
-                        var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name,khachhang.FirstName),
-                            new Claim("CustomerId", khachhang.Id.ToString())
-                        };
-                        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
-                        ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                        await HttpContext.SignInAsync(claimsPrincipal);
                         _notyfService.Success("Đăng ký thành công");
                         return RedirectToAction("Dashboard", "Accounts");
                     }
@@ -299,7 +304,6 @@ namespace HiepStore.Controllers
                 return View(customer);
             }
         }
-
 
         [Route("signin-facebook", Name = "signin-facebook")]
         public async Task<IActionResult> LoginWithFacebookAsync(string code)
