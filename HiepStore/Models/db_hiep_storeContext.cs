@@ -28,6 +28,7 @@ namespace HiepStore.Models
         public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductType> ProductTypes { get; set; } = null!;
+        public virtual DbSet<ResetPass> ResetPasses { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Shipper> Shippers { get; set; } = null!;
         public virtual DbSet<Tag> Tags { get; set; } = null!;
@@ -661,6 +662,28 @@ namespace HiepStore.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(250)
                     .HasColumnName("name");
+            });
+
+            modelBuilder.Entity<ResetPass>(entity =>
+            {
+                entity.ToTable("reset_pass");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.MEmail)
+                    .HasMaxLength(256)
+                    .IsUnicode(false)
+                    .HasColumnName("m_email");
+
+                entity.Property(e => e.MNumcheck).HasColumnName("m_numcheck");
+
+                entity.Property(e => e.MTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("m_time");
+
+                entity.Property(e => e.MToken)
+                    .HasMaxLength(512)
+                    .HasColumnName("m_token");
             });
 
             modelBuilder.Entity<Role>(entity =>

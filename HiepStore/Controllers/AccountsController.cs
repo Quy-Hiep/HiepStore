@@ -19,6 +19,10 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net;
 using System.IO;
+using NuGet.Packaging.Signing;
+using Org.BouncyCastle.Asn1.Cms;
+using System.Security.Cryptography;
+using System.Net.Mail;
 
 namespace HiepStore.Controllers
 {
@@ -472,6 +476,7 @@ namespace HiepStore.Controllers
             }
         }
 
+
         [HttpGet]
         [Route("dang-xuat.html", Name = "DangXuat")]
         public IActionResult Logout()
@@ -480,7 +485,149 @@ namespace HiepStore.Controllers
             HttpContext.Session.Remove("CustomerId");
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        [Route("quen-mat-khau", Name = "QuenMatKhau")]
+        public IActionResult ForgotPassword()
+		{
+			return View();
+        }
         [HttpPost]
+		[Route("quen-mat-khau", Name = "QuenMatKhau")]
+		public async Task<IActionResult> ForgotPassword(String email)
+        {
+			var user = _context.Customers.AsNoTracking().SingleOrDefault(x => x.Email == email);
+			//nếu user bằng null
+			//thì thông báo "email này chưa được sử dụng cho tài khoản nào, vui lòng nhập lại email" và return view()
+			//nếu user có tồn tại thì
+			//Tạo một chuỗi ngẫu nhiên có độ dài tương đối, ví dụ chuỗi ngẫu nhiên 16 ký tự.
+			//Thêm mới một record vào bảng "reset_pass", với thông tin các field như sau:
+			//id: không cần truyền vào, cái này là khóa chính, và mình đã đặt thành "auto increment" trước đó.
+			//m_email: là địa chỉ email nhận được ở bước 1.
+			//m_time: timestamp ở thời điểm hiện tại
+			//m_numcheck: không cần truyền vào, mặc định giá trị này sẽ bằng "0" khi mới thêm vào như định nghĩa của bảng phía trên.
+			//m_token: mã hóa một chiều chuỗi ký tự ngẫu nhiên đã tạo tại bước 3.
+			//Gửi đường link reset pass cho người dùng thông qua email nhận được ở bước 1. Đường link reset pass sẽ có dạng: 
+			//<a href="https://yourdomain.com/resetPassword.php?email={email}&key={key}">Nhấn vào đây để tiến hành đặt lại mật khẩu</a>
+			if (user == null)
+            {
+				_notyfService.Error("Email không liên kết với tài khoản nào. vui lòng nhập lại email!");
+				return View();
+			}
+			else
+            {
+				string token = Utilities.GetRandomKeyNonSpecialCharacters(16);
+
+                ResetPass resetPass = new ResetPass();
+				resetPass.MEmail = email;
+				resetPass.MTime = DateTime.Now;
+				resetPass.MNumcheck = 0;
+				resetPass.MToken = token.ToMD5();
+				_context.Add(resetPass);
+				await _context.SaveChangesAsync();
+
+                //tiến hành gửi mail
+				MailMessage mail = new MailMessage();
+				mail.From = new MailAddress("quyhiep653@gmail.com");
+				mail.To.Add(email);
+				mail.Subject = "Thông tin đặt lại mật khẩu";
+				//you can specify also CC and BCC - i will skip this
+				//mail.CC.Add("");
+				//mail.Bcc.Add("");
+				mail.IsBodyHtml = true;
+                string content = "<br/>HIEPSTORE<br/>" +
+                    "<p>Bạn đang thực hiện quá trình đặt lại mật khẩu. " +
+                    "Vui lòng nhấn vào link bên dưới để tiếp tục</p>" +
+                    "Lưu ý: link chỉ có hiệu lực trong 60p" +
+					"<a href=\"https://localhost:7217/ResetPassword?email="+ email + "&key=" + token + "\">Nhấn vào đây để tiến hành đặt lại mật khẩu</a>" +
+                    "Nếu bạn không phải là người yêu cầu đặt lại mật khẩu, vui lòng bỏ qua và không nhấn vào link";
+				mail.Body = content;
+
+				//create SMTP instant
+				//you need to pass mail server address and you can also specify the port number if you required
+				SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
+				//Create nerwork credential and you need to give from email address and password
+				NetworkCredential networkCredential = new NetworkCredential("quyhiep653@gmail.com", "rnknvrpgnfayssnw");
+				smtpClient.UseDefaultCredentials = false;
+				smtpClient.Credentials = networkCredential;
+				smtpClient.Port = 587; // this is default port number - you can also change this
+				smtpClient.EnableSsl = true; // if ssl required you need to enable it
+				smtpClient.Send(mail);
+
+				return RedirectToAction("SuccessSendMail", "Accounts", email);
+			}
+        }
+
+		[Route("gui-mail-dat-lai-mat-khau-thanh-cong")]
+		public IActionResult SuccessSendMail(string email) 
+        {
+            ViewBag.email = email;
+            return View(); 
+        }
+
+		[Route("/ResetPassword")]
+		public IActionResult ResetPassword( string email, string key)
+        {
+            var reset_pass = _context.ResetPasses
+                .AsNoTracking()
+                .Where(n => n.MEmail == email)
+                .FirstOrDefault();
+            if (reset_pass == null) 
+            {
+                _notyfService.Error("email không tồn tại, vui lòng nhập lại email để nhận link mới");
+                return RedirectToAction("ForgotPassword", "Accounts");
+            }
+            else if(key.ToMD5()!= reset_pass.MToken)
+            {
+				reset_pass.MNumcheck += 1;
+                if (reset_pass.MNumcheck > 3)
+                {
+					_context.ResetPasses.Remove(reset_pass);
+					_context.SaveChanges();
+					_notyfService.Error("Khóa không hợp lệ, Xác thực thất bại quá 3 lần, vui lòng nhập email để nhận link mới");
+					return RedirectToAction("ForgotPassword", "Accounts");
+				}
+				//thông báo lỗi "khóa không hợp lệ vui lòng thử lại link" và return
+                _notyfService.Error("Khóa không hợp lệ, vui lòng nhấn lại link xác thực trong email!");
+				_context.ResetPasses.Update(reset_pass);
+				_context.SaveChanges();
+
+				return RedirectToAction("Index", "Home");
+			}
+            else
+            {
+                TimeSpan time = (TimeSpan)(reset_pass.MTime - DateTime.Now);
+                double mTime = time.TotalMinutes;
+				if (mTime > 60)
+				{
+					_context.ResetPasses.Remove(reset_pass);
+					_context.SaveChanges();
+					_notyfService.Error("Link hết hạn, vui lòng nhập email để nhận link mới");
+					return RedirectToAction("ForgotPassword", "Accounts");
+				}
+                return View();
+			}
+        }
+
+        [HttpPost]
+		[Route("/ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+			var reset_pass = _context.ResetPasses.AsNoTracking().Where(n => n.MEmail == model.Email).FirstOrDefault();
+			var taikhoan = _context.Customers.Where(n => n.Email == model.Email).FirstOrDefault();
+			string passnew = (model.Password.Trim() + taikhoan.Salt.Trim()).ToMD5();
+			taikhoan.Password = passnew;
+            
+			HttpContext.Session.SetString("CustomerId", taikhoan.Id.ToString());
+			taikhoan.LastLogin = DateTime.Now;
+			_context.Update(taikhoan);
+            _context.ResetPasses.Remove(reset_pass);
+			_context.SaveChanges();
+			_notyfService.Success("Thiết lập mật khẩu mới thành công");
+			return RedirectToAction("Dashboard", "Accounts");
+        }
+
+		[HttpPost]
         public IActionResult ChangePassword(ChangePasswordViewModel model)
         {
             try
