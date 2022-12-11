@@ -195,7 +195,8 @@ namespace HiepStore.Controllers
                         Password = (taikhoan.Password + salt.Trim()).ToMD5(),
                         IsActive = true,
                         Salt = salt,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.Now,
+                        LastLogin= DateTime.Now
                     };
                     try
                     {
