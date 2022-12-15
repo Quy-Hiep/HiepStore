@@ -1,0 +1,169 @@
+﻿@using PagedList.Core.Mvc
+@model PagedList.Core.IPagedList<HiepStore.Models.News>
+
+@{
+    ViewData["Title"] = "Thùng rác";
+}
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <span class="breadcrumb-item active">Thùng rác</span>
+        </nav>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row m-b-30">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-affix m-v-10">
+                            <i class="prefix-icon anticon anticon-search opacity-04"></i>
+                            <input id="keyword" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm sản phẩm">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!--lọc theo tab-->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 text-right">
+                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminNews" asp-action="Create"><i class="anticon anticon-plus-circle m-r-5"></i><span>Thêm</span></a>
+            </div>
+            <div class="col-lg-2 text-right">
+                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminNews" asp-action="Trash"><i class="anticon anticon-plus-circle m-r-5"></i><span>Thùng rác</span></a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover e-commerce-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ảnh</th>
+                        <th>Tiêu đề</th>
+                        <th>Thẻ</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th>Là tin nóng</th>
+                        <th>là tin mới</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>
+                                    <a asp-area="Admin" asp-controller="AdminPosts" asp-action="Details" asp-route-id="@item.Id">
+                                        <div class="d-flex align-items-center text-wrap" style="max-width: 200px">
+                                            <img class="img-fluid rounded" src="~/assets/images/posts/@item.Thumb" style="max-width: 60px" alt="@item.Alias" />
+                                        </div>
+                                    </a>
+                                </td>
+                                <td><a asp-area="Admin" asp-controller="AdminPosts" asp-action="Details" asp-route-id="@item.Id"><h6>@item.Title</h6></a></td>
+                                @if (item.TagsId != null)
+                                {
+                                    <td>@item.Tags.Name</td>
+                                }
+                                else
+                                {
+                                    <td>Không có</td>
+                                }
+                                <td>@item.CreatedAt</td>
+                                <td>
+                                    @if (item.IsPublished == true)
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="badge badge-success badge-dot m-r-10"></div>
+                                            <div>Public</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="badge badge-success badge-dot m-r-10"></div>
+                                            <div>Non-Public</div>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsHot == true)
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="badge badge-success badge-dot m-r-10"></div>
+                                            <div>Hot</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="badge badge-success badge-dot m-r-10"></div>
+                                            <div>-</div>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsNewfeed == true)
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="badge badge-success badge-dot m-r-10"></div>
+                                            <div>IsNewFeed</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="badge badge-success badge-dot m-r-10"></div>
+                                            <div>-</div>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary btn-tone m-r-5" asp-area="Admin" asp-controller="AdminNews" asp-action="ReTrash" asp-route-id="@item.Id">Khôi phục</a>
+                                    <a class="btn btn-success btn-tone m-r-5" asp-area="Admin" asp-controller="AdminNews" asp-action="Delete" asp-route-id="@item.Id">Xóa vĩnh viễn</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div aria-label="Page navigation example">
+            <ul class="pagination">
+                <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminPosts" asp-action="Trash" />
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#keyword").keyup(function () {
+                var strkeyword = $('#keyword').val();
+                $.ajax({
+                    url: '/Admin/Search/FindProduct/',
+                    datatype: "json",
+                    type: "POST",
+                    data: { keyword: strkeyword },
+                    async: true,
+                    success: function (results) {
+                        $("#records_table").html("");
+                        $("#records_table").html(results);
+                    },
+                    error: function (xhr) {
+                        alert('error');
+                    }
+                });
+            });
+        });
+    </script>
+
+}
+

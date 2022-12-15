@@ -1,0 +1,174 @@
+﻿@using PagedList.Core.Mvc
+@model PagedList.Core.IPagedList<HiepStore.Models.News>
+@{
+    ViewData["TiTle"] = "Tin tức - trang chủ ";
+    Layout = "~/Views/Shared/News/_NewsLayout.cshtml";
+}
+
+<section class="section first-section">
+    <div class="container-fluid">
+        <div class="masonry-blog clearfix">
+            @foreach (var item in @Model.Where(x => x.IsHot == true).Take(4))
+            {
+                string urlTitle = $"/tin-tuc/{item.Alias}-{item.Id}";
+                string urlAuthor = $"/tin-tuc/profile/{item.AccountId}";
+                <div class="second-slot">
+                    <div class="masonry-box post-media">
+                        <img src="~/assets/images/news/@item.Thumb" alt="" class="img-fluid"><!--394x449-->
+                        <div class="shadoweffect">
+                            <div class="shadow-desc">
+                                <div class="blog-meta">
+                                    <span class="bg-orange"><a href="tech-category-01.html" title="">@item.Tags.Name</a></span>
+                                    <h4><a href="@urlTitle" title="">@item.Title</a></h4>
+                                    <small><a title="">@item.CreatedAt</a></small>
+                                    <small><a href="@urlAuthor" title="">@item.Author</a></small>
+                                </div><!-- end meta -->
+                            </div><!-- end shadow-desc -->
+                        </div><!-- end shadow -->
+                    </div><!-- end post-media -->
+                </div>
+            }
+        </div><!-- end masonry -->
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                <div class="page-wrapper">
+                    <div class="blog-top clearfix">
+                        <h4 class="pull-left">Tin mới nhất <a href="#"><i class="fa fa-rss"></i></a></h4>
+                    </div><!-- end blog-top -->
+                    @foreach (var item in Model.Where(x => x.IsNewfeed == true))
+                    {
+                        string urlTitle = $"/tin-tuc/{item.Alias}-{item.Id}";
+                        string urlAuthor = $"/tin-tuc/profile/{item.AccountId}";
+                        string urlTag = $"/tin-tuc/tags/{item.Tags.Alias}-{item.Tags.Id}";
+                        <div class="blog-list clearfix">
+                            <div class="blog-box row">
+                                <div class="col-md-4">
+                                    <div class="post-media">
+                                        <a href="@urlTitle" title="">
+                                            <img src="~/assets/images/news/@item.Thumb" alt="" class="img-fluid"><!--600x500-->
+                                            <div class="hovereffect"></div>
+                                        </a>
+                                    </div><!-- end media -->
+                                </div><!-- end col -->
+
+                                <div class="blog-meta big-meta col-md-8">
+                                    <h4><a href="@urlTitle" title="">@item.Title</a></h4>
+                                    <p style="display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;">@item.Subtitle</p>
+                                    <small class="firstsmall"><a class="bg-orange" href="@urlTag" title="">@item.Tags.Name</a></small>
+                                    <small><a href="@urlTitle" title="">@item.CreatedAt</a></small>
+                                    <small><a href="@urlAuthor" title="">@item.Author</a></small>
+                                    <small><a href="@urlTitle" title=""><i class="fa fa-eye"></i> @item.Views</a></small>
+                                </div><!-- end meta -->
+                            </div><!-- end blog-box -->
+
+                            <hr class="invis">
+                        </div>
+
+                        <!-- end blog-list -->
+                    }
+
+                </div><!-- end page-wrapper -->
+
+                <hr class="invis">
+
+                <div class="row"> <!--pagelist-->
+                    <div class="col-md-12">
+                        <pager class="pager-container" list="@Model" options="@PagedListRenderOptions.Bootstrap4PageNumbersPlusPrevAndNext" asp-controller="News" asp-action="Index"/>
+                    </div><!-- end col -->
+                </div><!-- end row -->
+            </div><!-- end col -->
+
+            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                <div class="sidebar">
+                    <div class="widget">
+                        <h2 class="widget-title">Videos Mới</h2>
+                        @foreach (var item in Model.Where(x => x.TagsId == 7))
+                        {                       
+                            string urlTitle = $"/tin-tuc/{item.Alias}-{item.Id}";
+                            <div class="trend-videos">
+                                <div class="blog-box">
+                                    <div class="post-media">
+                                        <a href="@urlTitle" title="">
+                                            <img src="~/assets/images/news/@item.Thumb" alt="" class="img-fluid">
+                                            <div class="hovereffect">
+                                                <span class="videohover"> </span>
+                                            </div><!-- end hover -->
+                                        </a>
+                                    </div><!-- end media -->
+                                    <div class="blog-meta">
+                                        <h4><a href="@urlTitle" title="">@item.Title</a></h4>
+                                    </div><!-- end meta -->
+                                </div><!-- end blog-box -->
+
+                                <hr class="invis">
+
+                            </div><!-- end videos -->
+
+                        }
+                    </div><!-- end widget -->
+
+                    <div class="widget">
+                        <h2 class="widget-title">bài viết được xem nhiều</h2>
+                        @foreach (var item in Model.OrderByDescending(x=>x.Views).Take(5))
+                        {
+                            string urlTitle = $"/tin-tuc/{item.Alias}-{item.Id}";
+                            <div class="blog-list-widget">
+                                <div class="list-group">
+                                    <a href="@urlTitle" class="list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="w-100 justify-content-between">
+                                            <img src="~/assets/images/news/@item.Thumb" alt="" class="img-fluid float-left">
+                                            <h5 class="mb-1" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">@item.Title</h5>
+                                            <small>@item.CreatedAt</small>
+                                        </div>
+                                    </a>
+
+                                </div>
+                            </div>
+
+                            <!-- end blog-list -->
+                        }
+                    </div><!-- end widget -->
+
+                    <div class="widget">
+                        <h2 class="widget-title">Cộng tác với chúng tôi</h2>
+
+                        <div class="row text-center">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                                <a href="https://www.facebook.com/nquyhiep" class="social-button facebook-button">
+                                    <i class="fa fa-facebook"></i>
+                                    <p>27k</p>
+                                </a>
+                            </div>
+
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                                <a href="https://twitter.com/quyhiep01" class="social-button twitter-button">
+                                    <i class="fa fa-twitter"></i>
+                                    <p>98k</p>
+                                </a>
+                            </div>
+
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                                <a href="https://www.youtube.com/@@quyhiep" class="social-button google-button">
+                                    <i class="fa fa-google-plus"></i>
+                                    <p>17k</p>
+                                </a>
+                            </div>
+
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                                <a href="https://www.youtube.com/@@quyhiep" class="social-button youtube-button">
+                                    <i class="fa fa-youtube"></i>
+                                    <p>22k</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div><!-- end widget -->
+                </div><!-- end sidebar -->
+            </div><!-- end col -->
+        </div><!-- end row -->
+    </div><!-- end container -->
+</section>

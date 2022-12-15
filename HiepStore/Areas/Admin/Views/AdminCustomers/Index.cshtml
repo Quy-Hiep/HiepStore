@@ -81,7 +81,14 @@
                                 <td>@item.FirstName</td>
                                 <td>@item.Email</td>
                                 <td>@item.Phone</td>
-                                <td>@item.Location.Name</td>
+                                @if (item.LocationId != null)
+                                {
+                                    <td>@item.Location.Name</td>
+                                }
+                                else
+                                {
+                                    <td>Không có</td>
+                                }
                                 <td>@item.LastLogin</td>
 
                                 <td>

@@ -7,8 +7,8 @@ namespace HiepStore.Models
     {
         public Product()
         {
+            News = new HashSet<News>();
             OrderDetails = new HashSet<OrderDetail>();
-            Posts = new HashSet<Post>();
         }
 
         public int Id { get; set; }
@@ -40,7 +40,7 @@ namespace HiepStore.Models
         public virtual Brand? Brand { get; set; }
         public virtual Category? Category { get; set; }
         public virtual ProductType? Type { get; set; }
+        public virtual ICollection<News> News { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-        public virtual ICollection<Post> Posts { get; set; }
     }
 }

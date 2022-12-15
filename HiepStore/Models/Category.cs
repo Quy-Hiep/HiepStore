@@ -7,7 +7,7 @@ namespace HiepStore.Models
     {
         public Category()
         {
-            Posts = new HashSet<Post>();
+            News = new HashSet<News>();
             Products = new HashSet<Product>();
         }
 
@@ -31,7 +31,7 @@ namespace HiepStore.Models
         public string? MetaKey { get; set; }
         public string? SchemaMarkup { get; set; }
 
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<News> News { get; set; }
         public virtual ICollection<Product> Products { get; set; }
     }
 }

@@ -9,7 +9,6 @@ using PagedList.Core;
 namespace HiepStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
     public class AdminCategoriesController : Controller
     {
         private readonly db_hiep_storeContext _context;

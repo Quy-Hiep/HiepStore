@@ -22,10 +22,10 @@ namespace HiepStore.Models
         public virtual DbSet<Customer> Customers { get; set; } = null!;
         public virtual DbSet<District> Districts { get; set; } = null!;
         public virtual DbSet<Location> Locations { get; set; } = null!;
+        public virtual DbSet<News> News { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
         public virtual DbSet<Page> Pages { get; set; } = null!;
-        public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductType> ProductTypes { get; set; } = null!;
         public virtual DbSet<ResetPass> ResetPasses { get; set; } = null!;
@@ -345,6 +345,90 @@ namespace HiepStore.Models
                     .HasColumnName("type");
             });
 
+            modelBuilder.Entity<News>(entity =>
+            {
+                entity.ToTable("news");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.AccountId).HasColumnName("account_id");
+
+                entity.Property(e => e.Alias)
+                    .HasMaxLength(255)
+                    .HasColumnName("alias");
+
+                entity.Property(e => e.Author)
+                    .HasMaxLength(255)
+                    .HasColumnName("author");
+
+                entity.Property(e => e.BrandId).HasColumnName("brand_id");
+
+                entity.Property(e => e.CategoryId).HasColumnName("category_id");
+
+                entity.Property(e => e.Contents).HasColumnName("contents");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_at");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
+
+                entity.Property(e => e.IsHot).HasColumnName("is_hot");
+
+                entity.Property(e => e.IsNewfeed).HasColumnName("is_newfeed");
+
+                entity.Property(e => e.IsPublished).HasColumnName("is_published");
+
+                entity.Property(e => e.MetaDesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("meta_desc");
+
+                entity.Property(e => e.MetaKey)
+                    .HasMaxLength(255)
+                    .HasColumnName("meta_key");
+
+                entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+                entity.Property(e => e.Subtitle).HasColumnName("subtitle");
+
+                entity.Property(e => e.TagsId).HasColumnName("tags_id");
+
+                entity.Property(e => e.Thumb)
+                    .HasMaxLength(255)
+                    .HasColumnName("thumb");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(255)
+                    .HasColumnName("title");
+
+                entity.Property(e => e.Views).HasColumnName("views");
+
+                entity.HasOne(d => d.Account)
+                    .WithMany(p => p.News)
+                    .HasForeignKey(d => d.AccountId)
+                    .HasConstraintName("fk_news_accounts");
+
+                entity.HasOne(d => d.Brand)
+                    .WithMany(p => p.News)
+                    .HasForeignKey(d => d.BrandId)
+                    .HasConstraintName("fk_news_brands");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.News)
+                    .HasForeignKey(d => d.CategoryId)
+                    .HasConstraintName("fk_news_categories");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.News)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("fk_news_products");
+
+                entity.HasOne(d => d.Tags)
+                    .WithMany(p => p.News)
+                    .HasForeignKey(d => d.TagsId)
+                    .HasConstraintName("fk_news_tags");
+            });
+
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.ToTable("orders");
@@ -477,90 +561,6 @@ namespace HiepStore.Models
                 entity.Property(e => e.Title)
                     .HasMaxLength(250)
                     .HasColumnName("title");
-            });
-
-            modelBuilder.Entity<Post>(entity =>
-            {
-                entity.ToTable("posts");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.AccountId).HasColumnName("account_id");
-
-                entity.Property(e => e.Alias)
-                    .HasMaxLength(255)
-                    .HasColumnName("alias");
-
-                entity.Property(e => e.Author)
-                    .HasMaxLength(255)
-                    .HasColumnName("author");
-
-                entity.Property(e => e.BrandId).HasColumnName("brand_id");
-
-                entity.Property(e => e.CategoryId).HasColumnName("category_id");
-
-                entity.Property(e => e.Contents).HasColumnName("contents");
-
-                entity.Property(e => e.CreatedAt)
-                    .HasColumnType("datetime")
-                    .HasColumnName("created_at");
-
-                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
-
-                entity.Property(e => e.IsHot).HasColumnName("is_hot");
-
-                entity.Property(e => e.IsNewfeed).HasColumnName("is_newfeed");
-
-                entity.Property(e => e.IsPublished).HasColumnName("is_published");
-
-                entity.Property(e => e.MetaDesc)
-                    .HasMaxLength(255)
-                    .HasColumnName("meta_desc");
-
-                entity.Property(e => e.MetaKey)
-                    .HasMaxLength(255)
-                    .HasColumnName("meta_key");
-
-                entity.Property(e => e.ProductId).HasColumnName("product_id");
-
-                entity.Property(e => e.Subtitle).HasColumnName("subtitle");
-
-                entity.Property(e => e.TagsId).HasColumnName("tags_id");
-
-                entity.Property(e => e.Thumb)
-                    .HasMaxLength(255)
-                    .HasColumnName("thumb");
-
-                entity.Property(e => e.Title)
-                    .HasMaxLength(255)
-                    .HasColumnName("title");
-
-                entity.Property(e => e.Views).HasColumnName("views");
-
-                entity.HasOne(d => d.Account)
-                    .WithMany(p => p.Posts)
-                    .HasForeignKey(d => d.AccountId)
-                    .HasConstraintName("fk_posts_accounts");
-
-                entity.HasOne(d => d.Brand)
-                    .WithMany(p => p.Posts)
-                    .HasForeignKey(d => d.BrandId)
-                    .HasConstraintName("fk_posts_brands");
-
-                entity.HasOne(d => d.Category)
-                    .WithMany(p => p.Posts)
-                    .HasForeignKey(d => d.CategoryId)
-                    .HasConstraintName("fk_posts_categories");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.Posts)
-                    .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("fk_posts_products");
-
-                entity.HasOne(d => d.Tags)
-                    .WithMany(p => p.Posts)
-                    .HasForeignKey(d => d.TagsId)
-                    .HasConstraintName("fk_posts_tags");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -730,6 +730,10 @@ namespace HiepStore.Models
                 entity.ToTable("tags");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Alias)
+                    .HasMaxLength(255)
+                    .HasColumnName("alias");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(255)

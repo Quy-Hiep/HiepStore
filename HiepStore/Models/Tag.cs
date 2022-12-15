@@ -7,12 +7,13 @@ namespace HiepStore.Models
     {
         public Tag()
         {
-            Posts = new HashSet<Post>();
+            News = new HashSet<News>();
         }
 
         public int Id { get; set; }
         public string? Name { get; set; }
+        public string? Alias { get; set; }
 
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<News> News { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace HiepStore.Models
     {
         public Account()
         {
-            Posts = new HashSet<Post>();
+            News = new HashSet<News>();
         }
 
         public int Id { get; set; }
@@ -26,6 +26,6 @@ namespace HiepStore.Models
         public DateTime? UpdatedAt { get; set; }
 
         public virtual Role? Role { get; set; }
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<News> News { get; set; }
     }
 }

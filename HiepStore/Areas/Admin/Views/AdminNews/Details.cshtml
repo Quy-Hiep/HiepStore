@@ -1,0 +1,166 @@
+﻿@model HiepStore.Models.News
+
+@{
+    ViewData["Title"] = "Chi tiết tin tức :" + Model.Title;
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <a asp-area="Admin" asp-controller="AdminTinDangs" asp-action="Index" class="breadcrumb-item">Danh sách tin tức</a>
+            <span class="breadcrumb-item active">Danh mục : @Model.Title</span>
+        </nav>
+    </div>
+</div>
+
+<div class="page-header no-gutters has-tab">
+    <div class="d-md-flex m-b-15 align-items-center justify-content-between">
+        <div class="media align-items-center m-b-15">
+            <div class="avatar avatar-image rounded" style="height:70px; width:70px">
+                <img src="~/assets/images/posts/@Model.Thumb" alt="@Model.Title" />
+            </div>
+            <div class="m-l-15">
+                <h4 class="m-b-0">@Model.Title</h4>
+                <p class="text-muted m-b-0">ID: #@Model.Id</p>
+            </div>
+        </div>
+        <div class="m-b-15">
+            <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminNews" asp-action="Edit" asp-route-id="@Model.Id">Chỉnh Sửa</a>
+        </div>
+    </div>
+</div>
+
+<main>
+    <hr />
+    <dl class="row">
+        <div class="col-sm-2"><dt>Tiêu đề</dt></div>
+        <div class="col-sm-10"><dd>@Model.Title</dd></div>
+
+        <div class="col-sm-2"><dt>mô tả</dt></div>
+        <div class="col-sm-10"><dd>@Model.Subtitle</dd></div>
+
+        <div class="col-sm-2"><dt>Alias</dt></div>
+        <div class="col-sm-10"><dd>@Model.Alias</dd></div>
+    </dl>
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row">
+                <div class="col-sm-3"><dt>Tác giả</dt></div>
+                <div class="col-sm-9"><dd>@Model.Author</dd></div>
+
+                <div class="col-sm-3"><dt>Tài khoản</dt></div>
+                <div class="col-sm-9"><dd>@Model.Account.Email</dd></div>
+
+                <div class="col-sm-3"><dt>Thẻ</dt></div>
+                <div class="col-sm-9">
+                    @if (Model.TagsId != null)
+                    {
+                        <dd>@Model.Tags.Name</dd>
+                    }
+                    else
+                    {
+                        <dd>bài viết không thuộc thẻ nào</dd>
+                    }
+                </div>
+
+                <div class="col-sm-3"><dt>Danh mục</dt></div>
+                <div class="col-sm-9">
+                @if (Model.CategoryId != null)
+                {
+                    <dd>@Model.Category.Name</dd>
+                }
+                else
+                {
+                    <dd>Bài viết không thuộc danh mục sp nào</dd>
+                }
+                </div>
+
+                <div class="col-sm-3"><dt>Thương hiệu</dt></div>
+                <div class="col-sm-9">
+                @if (Model.BrandId != null)
+                {
+                    <dd>@Model.Brand.Name</dd>
+                }
+                else
+                {
+                    <dd>bài viết không thuộc thương hiệu nào</dd>
+                }
+                </div>
+
+                <div class="col-sm-3"><dt>Sản phẩm</dt></div>
+                <div class="col-sm-9">
+                @if (Model.ProductId != null)
+                {
+                    <dd>@Model.Product.Name</dd>
+                }
+                else
+                {
+                    <dd>Bài viết không thuộc sản phẩm nào</dd>
+                }
+                </div>
+            </dl>
+
+        </div>
+        <div class="col-md-6">
+            <dl class="row">
+                <dt class="col-sm-3">Trạng thái</dt>
+                @if (@Model.IsPublished == true)
+                {
+                    <dd class="col-sm-9">Công khai</dd>
+                }
+                else
+                {
+                    <dd class="col-sm-9">Ẩn</dd>
+                }
+
+                <dt class="col-sm-3">Xóa</dt>
+                @if (@Model.IsDeleted == true)
+                {
+                    <dd class="col-sm-9">Bị xóa</dd>
+                }
+                else
+                {
+                    <dd class="col-sm-9">Không bị xóa</dd>
+                }
+
+                <dt class="col-sm-3">Là tin nóng</dt>
+                @if (@Model.IsHot == true)
+                {
+                    <dd class="col-sm-9">Có</dd>
+                }
+                else
+                {
+                    <dd class="col-sm-9">Không</dd>
+                }
+
+                <dt class="col-sm-3">Đưa lên newfeed</dt>
+                @if (@Model.IsNewfeed == true)
+                {
+                    <dd class="col-sm-9">Có</dd>
+                }
+                else
+                {
+                    <dd class="col-sm-9">không</dd>
+                }
+
+                <dt class="col-sm-3">Meta_key</dt>
+                <dd class="col-sm-9">@Model.MetaKey</dd>
+
+                <dt class="col-sm-3">Meta_Desc</dt>
+                <dd class="col-sm-9">@Model.MetaDesc</dd>
+
+                <dt class="col-sm-3">Lược xem</dt>
+                <dd class="col-sm-9">@Model.Views</dd>
+            </dl>
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <h4 class="text-center">NỘI DUNG</h4>
+    <hr />
+
+    <div>@Html.Raw(Model.Contents)</div>
+</main>
+

@@ -1,0 +1,49 @@
+﻿<header class="tech-header header">
+    <div class="container-fluid">
+        <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="tech-index.html"><img src="images/version/tech-logo.png" alt=""></a>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tin-tuc.html">Trang chủ</a>
+                    </li>
+                    @foreach (var item in ViewBag.ListTag)
+                    {
+                        string url = $"/tin-tuc/tags/{item.Alias}-{item.Id}";
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="@url">@item.Name</a>
+                        </li>
+
+                    }
+                    <li class="nav-item btn-group">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Danh mục</a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            @foreach (var item in ViewBag.ListCategory)
+                            {
+                                string url = $"/tin-tuc/danh-muc-san-pham/{item.Alias}-{item.Id}";
+                                <a class="dropdown-item" href="@url" type="button">@item.Name</a>
+                            }
+                        </div>
+                    </li>
+                    <li class="nav-item btn-group">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Thương Hiệu</a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            @foreach (var item in ViewBag.ListBrand)
+                            {
+                                string url = $"/tin-tuc/thuong-hieu/{item.Alias}-{item.Id}";
+                                <a class="dropdown-item" href="@url" type="button">@item.Name</a>
+                            }
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tech-category-01.html">Trang Mua hàng</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div><!-- end container-fluid -->
+</header><!-- end market-header -->

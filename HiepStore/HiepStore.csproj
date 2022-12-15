@@ -20,7 +20,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11" />
     <PackageReference Include="MimeKit" Version="3.4.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="PagedList.Core.Mvc" Version="3.0.0" />
@@ -30,7 +30,7 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="wwwroot\Adminassets\images\avatars\" />
     <Folder Include="wwwroot\assets\images\avatars\" />
-    <Folder Include="wwwroot\assets\images\posts\" />
+    <Folder Include="wwwroot\assets\images\news\" />
   </ItemGroup>
 
   <ItemGroup>
