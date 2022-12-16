@@ -1,4 +1,12 @@
-﻿<header class="section-header">
+﻿@model HiepStore.ModelViews.HomeModel
+
+<style>
+	.dropdown:hover .dropdown-menu {
+		display: block;
+		margin-top: 0;
+	}
+</style>
+<header class="section-header">
 	<section class="header-main border-bottom">
 		<div class="container">
 			<div class="row align-items-center">
@@ -7,25 +15,25 @@
 						<img class="logo" src="~/assets/images/logo.png">
 					</a> <!-- brand-wrap.// -->
 				</div>
-                    <div class="col-xl-6 col-lg-5 col-md-6">
-                        @using (Html.BeginForm("Search", "Search", FormMethod.Get))
-                        {
-                            <form action="#" class="search-header">
-                                <div class="input-group w-100">
-                                    <input type="text" name="SearchString" class="form-control" placeholder="Bạn cần tìm gì?">
-                                    @*@Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { placeholder = "Tìm kiếm", @class = "form-control" })*@
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" type="submit">
-                                            <i class="fa fa-search"></i> Tìm kiếm
-                                        </button>
-                                    </div>
-                                </div>
-                            </form> <!-- search-wrap .end// -->
-                        }
+				<div class="col-xl-6 col-lg-5 col-md-6">
+					@using (Html.BeginForm("Search", "Search", FormMethod.Get))
+					{
+						<form action="#" class="search-header">
+							<div class="input-group w-100">
+								<input type="text" name="SearchString" class="form-control" placeholder="Bạn cần tìm gì?">
+								@*@Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { placeholder = "Tìm kiếm", @class = "form-control" })*@
+								<div class="input-group-append">
+									<button class="btn btn-primary" type="submit">
+										<i class="fa fa-search"></i> Tìm kiếm
+									</button>
+								</div>
+							</div>
+						</form> <!-- search-wrap .end// -->
+					}
 
-                    </div> <!-- col.// -->
-                    <div class="col-xl-4 col-lg-4 col-md-6">
-                        <div class="widgets-wrap float-md-right">
+				</div> <!-- col.// -->
+				<div class="col-xl-4 col-lg-4 col-md-6">
+					<div class="widgets-wrap float-md-right">
 						<div class="widget-header mr-3 dropdown">
 							<a class="widget-view" data-toggle="dropdown">
 								<div class="icon-area">
@@ -44,18 +52,18 @@
 									<li><a class="dropdown-item" href="@Url.Action("Login", "Accounts")">Đăng nhập</a></li>
 								}
 							</div>
-                            </div>
-                            <div class="widget-header">
-                                <a href="@Url.Action("Index", "Cart")" class="widget-view">
-                                    <div class="icon-area">
-                                        <i class="fa fa-shopping-cart"></i>
-											@await Component.InvokeAsync("NumberCart")
-                                    </div>
-                                    <small class="text"> Giỏ hàng </small>
-                                </a>
-                            </div>
-                        </div> <!-- widgets-wrap.// -->
-                    </div> <!-- col.// -->
+						</div>
+						<div class="widget-header">
+							<a href="@Url.Action("Index", "Cart")" class="widget-view">
+								<div class="icon-area">
+									<i class="fa fa-shopping-cart"></i>
+									@await Component.InvokeAsync("NumberCart")
+								</div>
+								<small class="text"> Giỏ hàng </small>
+							</a>
+						</div>
+					</div> <!-- widgets-wrap.// -->
+				</div> <!-- col.// -->
 			</div> <!-- row.// -->
 		</div> <!-- container.// -->
 	</section> <!-- header-main .// -->
@@ -73,11 +81,29 @@
 					<li class="nav-item">
 						<a class="nav-link" href="@Url.Action("Index","Home")">Trang chủ</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="@Url.Action("Index","Category")">Danh mục</a>
+					<li class="dropdown  nav-item btn-group">
+						<a class="nav-link dropdown-toggle" data-toggle="dropdown" asp-action="Index" asp-controller="Category">Danh Mục</a>
+						<div class="dropdown-menu">
+							@foreach (var item in Model.ListCategory)
+							{
+								string url = $"/{item.Alias}";
+								<a class="dropdown-item" href="@url" type="button">@item.Name</a>
+
+							}
+							<a class="dropdown-item" asp-action="Index" asp-controller="Category">Xem tất cả danh mục</a>
+						</div>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="@Url.Action("Index","Brand")">Thương hiệu</a>
+					<li class="dropdown nav-item btn-group">
+						<a class="nav-link dropdown-toggle" data-toggle="dropdown" asp-action="Index" asp-controller="Brand">Thương Hiệu</a>
+						<div class="dropdown-menu">
+							@foreach (var item in Model.ListBrand)
+							{								
+								string url = $"/thuonghieu/{item.Alias}";
+								<a class="dropdown-item" href="@url" type="button">@item.Name</a>
+
+							}
+							<a class="dropdown-item" asp-action="Index" asp-controller="Brand">Xem tất cả thương hiệu</a>
+						</div>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/page/ve-chung-toi">Về chúng tôi</a>

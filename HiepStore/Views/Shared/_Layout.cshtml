@@ -35,11 +35,13 @@
 
 	<b class="screen-overlay"></b>
 	<!-- section-header -->
-	@await Html.PartialAsync("_HeaderPartialView.cshtml")
+	@*	@await Html.PartialAsync("_HeaderPartialView.cshtml")//được thay thế bằng Component vì net.core không còn sử dụng Html.RenderAction(). còn Html.PartialAsync không khả dụng trong trường hợp này
+*@
+	@await Component.InvokeAsync("Header")
 	<!-- section-header END.// -->
 	@RenderBody()
 	<!-- ========================= FOOTER ========================= -->
-	@await Html.PartialAsync("_FooterPartialView.cshtml")
+	@await Component.InvokeAsync("Footer")
 	<!-- ========================= FOOTER END // ========================= -->
 	<!--Main JS (Common Activation Codes)-->
 	@await Component.InvokeAsync("Notyf")

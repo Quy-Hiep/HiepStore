@@ -1,4 +1,5 @@
-﻿<style>
+﻿@model HiepStore.ModelViews.HomeModel
+<style>
     .back-to-top {
         position: fixed;
         bottom: 75px;
@@ -31,19 +32,19 @@
         });
 
         $(window).scroll(function () {
-            if ($(this).scrollTop() < $('body,html').height()-1000) {
+            if ($(this).scrollTop() < $('body,html').height() - 1000) {
                 $('#back-to-bottom').fadeIn();
-			} else {
+            } else {
                 $('#back-to-bottom').fadeOut();
-			}
-		});
-		// scroll body to $('body,html').height() on click
-		$('#back-to-bottom').click(function () {
-			$('body,html').animate({
-				scrollTop: $('body,html').height()
-			}, 400);
-			return false;
-		});
+            }
+        });
+        // scroll body to $('body,html').height() on click
+        $('#back-to-bottom').click(function () {
+            $('body,html').animate({
+                scrollTop: $('body,html').height()
+            }, 400);
+            return false;
+        });
     });
 </script>
 <a id="back-to-bottom" href="#" class="btn btn-light btn-lg back-to-bottom" role="button"><i class="fas fa-chevron-down"></i></a>
@@ -55,10 +56,10 @@
                 <aside class="col-md col-6">
                     <h6 class="title">Thương hiệu</h6>
                     <ul class="list-unstyled">
-                        <li> <a href="/thuonghieu/apple">Apple</a></li>
-                        <li> <a href="/thuonghieu/samsung">Samsung</a></li>
-                        <li> <a href="/thuonghieu/xiaomi">Xiaomi</a></li>
-                        <li> <a href="/thuonghieu/huawei">Huawei</a></li>
+                        @foreach (var item in Model.ListBrand.Take(4))
+                        {
+                            <li> <a href="/thuonghieu/apple">@item.Name</a></li>
+                        }
                         <li> <a asp-controller="Brand" asp-action="Index">Tất cả thương hiệu</a></li>
                     </ul>
                 </aside>
