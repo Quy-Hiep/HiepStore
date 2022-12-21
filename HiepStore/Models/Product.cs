@@ -36,6 +36,7 @@ namespace HiepStore.Models
         public string? Alias { get; set; }
         public string? MetaDesc { get; set; }
         public string? MetaKey { get; set; }
+        public string? Configuration { get; set; }
 
         public virtual Brand? Brand { get; set; }
         public virtual Category? Category { get; set; }

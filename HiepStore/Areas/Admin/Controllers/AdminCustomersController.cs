@@ -1,5 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using AspNetCoreHero.ToastNotification.Notyf;
+using HiepStore.Areas.Admin.Models;
 using HiepStore.Helpper;
 using HiepStore.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,6 @@ using PagedList.Core;
 namespace HiepStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize]
     public class AdminCustomersController : Controller
     {
         private readonly db_hiep_storeContext _context;
@@ -98,6 +98,10 @@ namespace HiepStore.Areas.Admin.Controllers
         // GET: Admin/AdminCustomers/Create
         public IActionResult Create()
         {
+            ViewBag.TinhThanh = new SelectList(_context.Locations, "Id", "Name");
+            ViewBag.QuanHuyen = new SelectList(_context.Districts, "Id", "Name");
+            ViewBag.XaPhuong = new SelectList(_context.Wards, "Id", "Name");
+
             return View();
         }
 
@@ -106,17 +110,29 @@ namespace HiepStore.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Birthday,Avatar,Address,Email,Phone,LocationId,District,Ward,CreatedAt,UpdatedAt,Password,Salt,LastLogin,IsActive,IsDeleted")] Customer customer, Microsoft.AspNetCore.Http.IFormFile fThumb)
+        public async Task<IActionResult> Create(CustomersViewModel customerView, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
-            if (ModelState.IsValid)
+            try
             {
+                Customer customer = new Customer();
+                customer.FirstName = customerView.FirstName;
+                customer.LastName = customerView.LastName;
                 if (fThumb != null)
                 {
                     string extension = Path.GetExtension(fThumb.FileName);
-                    string image = Utilities.SEOUrl(customer.FirstName) + extension;
-                    customer.Avatar = await Utilities.UploadFile(fThumb, @"customers", image.ToLower());
+                    string image = Utilities.SEOUrl(customer.FirstName+customer.LastName) + extension;
+                    customer.Avatar = await Utilities.UploadFile(fThumb, @"avatars", image.ToLower());
                 }
                 if (string.IsNullOrEmpty(customer.Avatar)) customer.Avatar = "default.jpg";
+                customer.Email = customerView.Email;
+                customer.Phone = customerView.Phone;
+                customer.Birthday = customerView.Birthday;
+                customer.LocationId = customerView.LocationId;
+                customer.DistrictId = customerView.DistrictId;
+                customer.WardId = customerView.WardId;
+                customer.Address = customerView.Address;
+                customer.Password = customerView.Password;
+
                 customer.CreatedAt = DateTime.Now;
                 customer.UpdatedAt = DateTime.Now;
 
@@ -125,7 +141,16 @@ namespace HiepStore.Areas.Admin.Controllers
                 _notyfService.Success("Thêm khách hàng thành công");
                 return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            catch (Exception)
+            {
+                ViewBag.TinhThanh = new SelectList(_context.Locations, "Id", "Name", customerView.LocationId);
+                ViewBag.QuanHuyen = new SelectList(_context.Districts, "Id", "Name", customerView.DistrictId);
+                ViewBag.XaPhuong = new SelectList(_context.Wards, "Id", "Name", customerView.WardId);
+                return View(customerView);
+
+            }
+
+
         }
 
         // GET: Admin/AdminCustomers/Edit/5
@@ -141,56 +166,63 @@ namespace HiepStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["TinhThanh"] = new SelectList(_context.Locations, "Id", "Name", customer.LocationId);
-            ViewData["QuanHuyen"] = new SelectList(_context.Districts, "Id", "Name", customer.DistrictId);
-            ViewData["XaPhuong"] = new SelectList(_context.Wards, "Id", "Name", customer.WardId);
-            return View(customer);
+            var customerViewModel = new CustomersViewModel();
+            customerViewModel.Address = customer.Address;
+            customerViewModel.LastName = customer.LastName;
+            customerViewModel.FirstName = customer.FirstName;
+            customerViewModel.Email = customer.Email;
+            customerViewModel.Phone = customer.Phone;
+            customerViewModel.Birthday = customer.Birthday;
+            customerViewModel.LocationId = customer.LocationId;
+            customerViewModel.DistrictId= customer.DistrictId;
+            customerViewModel.WardId = customer.WardId;
+            customerViewModel.IsActive = customer.IsActive;
+            customerViewModel.Avatar = customer.Avatar;
+
+            ViewBag.TinhThanh = new SelectList(_context.Locations, "Id", "Name", customer.LocationId);
+            ViewBag.QuanHuyen = new SelectList(_context.Districts, "Id", "Name", customer.DistrictId);
+            ViewBag.XaPhuong = new SelectList(_context.Wards, "Id", "Name", customer.WardId);
+            return View(customerViewModel); 
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Birthday,Avatar,Address,Email,Phone,LocationId,DistrictId,WardId,CreatedAt,UpdatedAt,Password,Salt,LastLogin,IsActive,IsDeleted")] Customer customer, Microsoft.AspNetCore.Http.IFormFile fThumb)
+        public async Task<IActionResult> Edit(int id, Customer customer, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             if (id != customer.Id)
             {
                 return NotFound();
             }
-
-            //if (ModelState.IsValid)
-            //{
-                try
-                {
+            try
+            {
                 customer.FirstName = Utilities.ToTitleCase(customer.FirstName);
                 if (fThumb != null)
-                    {
-                        string extension = Path.GetExtension(fThumb.FileName);
-                        string image = Utilities.SEOUrl(customer.FirstName) + extension;
-                        customer.Avatar = await Utilities.UploadFile(fThumb, @"avatars", image.ToLower());
-                    }
-                    if (string.IsNullOrEmpty(customer.Avatar)) customer.Avatar = "default.jpg";
-                    customer.UpdatedAt = DateTime.Now;
-                    _context.Update(customer);
-                    _notyfService.Success("Cập nhật thành công");
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerExists(customer.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    string extension = Path.GetExtension(fThumb.FileName);
+                    string image = Utilities.SEOUrl(customer.FirstName + customer.LastName) + extension;
+                    customer.Avatar = await Utilities.UploadFile(fThumb, @"avatars", image.ToLower());
                 }
+                if (string.IsNullOrEmpty(customer.Avatar)) customer.Avatar = "default.jpg";
+                customer.UpdatedAt = DateTime.Now;
+                _context.Update(customer);
+                _notyfService.Success("Cập nhật thành công");
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            //}
-            ViewData["TinhThanh"] = new SelectList(_context.Locations, "Id", "Name", customer.LocationId);
-            ViewData["QuanHuyen"] = new SelectList(_context.Districts, "Id", "Name", customer.DistrictId);
-            ViewData["XaPhuong"] = new SelectList(_context.Wards, "Id", "Name", customer.WardId);
-
-            return View(customer);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CustomerExists(customer.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    ViewBag.TinhThanh = new SelectList(_context.Locations, "Id", "Name", customer.LocationId);
+                    ViewBag.QuanHuyen = new SelectList(_context.Districts, "Id", "Name", customer.DistrictId);
+                    ViewBag.XaPhuong = new SelectList(_context.Wards, "Id", "Name", customer.WardId);
+                    return View(customer);
+                }
+            }
         }
 
         //view xem danh sách Thùng rác

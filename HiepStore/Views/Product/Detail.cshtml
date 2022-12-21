@@ -1,6 +1,6 @@
 ﻿@model HiepStore.Models.Product
 @{
-    ViewBag.Title = "Detail";
+    ViewBag.Title = "Chi tiết sản phẩm";
 }
 
 
@@ -14,27 +14,33 @@
         </ol>
     </div>
 </section>
-<!-- ========================= SECTION CONTENT ========================= -->
-<section class="section-content bg-white padding-y">
+<!-- ========================= SECTION  ========================= -->
+<section class="section-name padding-y bg">
     <div class="container">
-        <!-- ============================ ITEM DETAIL ======================== -->
         <div class="row">
-            <aside class="col-md-6">
-                <div class="card rounded">
+            <div style="text-align: center" class="row col-md-7">
+                <div class="col-12 card rounded mb-3">
                     <article class="gallery-wrap">
                         <div class="img-big-wrap">
                             <div> <a href="#"><img src="~/assets/images/products/@Model.Thumb"></a></div>
                         </div> <!-- slider-product.// -->
-                        <div class="thumbs-wrap">
-                            <a href="#" class="item-thumb"> <img src="~/Content/images/items/15.jpg"></a>
-                            <a href="#" class="item-thumb"> <img src="~/Content/images/items/15-1.jpg"></a>
-                            <a href="#" class="item-thumb"> <img src="~/Content/images/items/15-2.jpg"></a>
-                            <a href="#" class="item-thumb"> <img src="~/Content/images/items/15-1.jpg"></a>
-                        </div> <!-- slider-nav.// -->
                     </article> <!-- gallery-wrap .end// -->
                 </div> <!-- card.// -->
-            </aside>
-            <main class="col-md-6">
+                <div class="col-12 px-md-5 box rounded mb-3">
+                <h4 class="title-description text-center">Bình luận</h4>
+                <hr />
+                @{
+                    string urll = $"/{Model.Alias}-{Model.Id}.html";
+                }
+                    <div class="fb-comments" data-href="@urll" data-width="100%" data-numposts="5"></div>
+            </div>
+                <div class="col-md-12 box rounded">
+                <h5 style="text-align:center" class="title-description">ĐẶC ĐIỂM NỔI BẬT</h5>
+                @Html.Raw(Model.Description)
+            </div>
+            </div> <!-- col.// -->
+
+            <aside class="col-md-5">
                 <article class="product-info-aside">
                     <h2 class="title mt-3">@Model.Name </h2>
                     <div class="rating-wrap my-3">
@@ -72,7 +78,7 @@
                         <dt class="col-sm-3">Tình trạng</dt>
                         <dd class="col-sm-9">Còn hàng</dd>
                     </dl>
-                    <div class="form-row  mt-4">
+                    <div class="form-row mt-4">
                         <div class="form-group col-md flex-grow-0">
                             <div class="input-group mb-3 input-spinner">
                                 <div class="input-group-prepend">
@@ -93,29 +99,20 @@
                         </div> <!-- col.// -->
                     </div> <!-- row.// -->
                 </article> <!-- product-info-aside .// -->
-            </main> <!-- col.// -->
-        </div> <!-- row.// -->
-        <!-- ================ ITEM DETAIL END .// ================= -->
-
-    </div> <!-- container .//  -->
-</section>
-<!-- ========================= SECTION CONTENT END// ========================= -->
-<!-- ========================= SECTION  ========================= -->
-<section class="section-name padding-y bg">
-    <div class="container">
-        <div class="row">
-            <div style="text-align: center" class="col-md-8 box rounded">
-                <h5 style="text-align:center" class="title-description">ĐẶC ĐIỂM NỔI BẬT</h5>
-                @Html.Raw(Model.Description)
-            </div> <!-- col.// -->
-
-            <aside class="col-md-4">
+                <div class="box rounded mb-3">
+                    <div class="d-flex justify-content-center">
+                        <h4 class="title-description" style="color:#696969">Cấu hình</h4>
+                    </div>
+                    <div>
+                        @Html.Raw(Model.Configuration)
+                    </div>
+                </div>
                 <div class="box rounded">
                     <h5 class="title-description">Bài viết liên quan</h5>
                     @foreach (var item in ViewBag.lstPost)
                     {
                         <article class="media mb-3">
-                            <a href="#"><img class="img-sm mr-3" src="~/assets/images/posts/@item.Thumb"></a>
+                            <a href="#"><img class="img-sm mr-3" src="~/assets/images/news/@item.Thumb"></a>
                             <div class="media-body">
                                 <h6 class="mt-0" style="display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;"><a href="#">@item.Title</a></h6>
                                 <p class="mb-2" style="display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;">@item.Subtitle</p>
@@ -126,16 +123,6 @@
                 </div> <!-- box.// -->
             </aside> <!-- col.// -->
         </div> <!-- row.// -->
-        <div class="row mt-5">
-            <div class="col-12 px-md-5">
-                <h4 class="title-description text-center">Bình luận</h4>
-                <hr />
-                @{
-                    string url = $"/{Model.Alias}-{Model.Id}.html";
-                }
-                <div class="fb-comments" data-href="@url" data-width="100%" data-numposts="5"></div>
-            </div>
-        </div>
     </div> <!-- container .//  -->
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->

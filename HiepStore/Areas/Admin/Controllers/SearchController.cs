@@ -64,5 +64,30 @@ namespace HiepStore.Areas.Admin.Controllers
                 return PartialView("ListCustomersSearchPartial", ls);
             }
         }
+        public IActionResult FindAccount(string keyword)
+        {
+            List<Account> ls = new List<Account>();
+            if (string.IsNullOrEmpty(keyword) || keyword.Length < 1)
+            {
+                return PartialView("ListAccountsSearchPartial", null);
+            }
+            ls = _context.Accounts.AsNoTracking()
+                .Where(x =>
+                    x.FirstName.Contains(keyword) ||
+                    x.LastName.Contains(keyword) ||
+                    x.Email.Contains(keyword) ||
+                    x.Phone.Contains(keyword))
+                .OrderByDescending(x => x.Id)
+                .Take(10).ToList();
+
+            if (ls == null)
+            {
+                return PartialView("ListAccountsSearchPartial", null);
+            }
+            else
+            {
+                return PartialView("ListAccountsSearchPartial", ls);
+            }
+        }
     }
 }

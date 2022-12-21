@@ -1,0 +1,61 @@
+﻿@model HiepStore.Areas.Admin.Models.AccountViewModel
+
+@{
+    ViewData["Title"] = "Thêm mới tài khoản quản trị";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="d-flex justify-content-center">Thêm Tài khoản quản trị</h1>
+<hr />
+<form class="row mx-5" asp-action="Create">
+    <div class="col-md-6 form-group">
+        <label asp-for="FirstName" class="control-label">Tên</label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+    <div class="col-md-5 form-group">
+        <label asp-for="LastName" class="control-label">Họ</label>
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 form-group">
+        <label asp-for="Email" class="control-label">Email</label>
+        <input type="email" asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 form-group">
+        <label asp-for="Phone" class="control-label">Điên thoại</label>
+        <input type="number" asp-for="Phone" class="form-control" />
+    </div>
+    <div class="col-md-6 form-group">
+        <label asp-for="Password" class="control-label">Mật khẩu</label>
+        <input type="password" asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 form-group">
+        <label asp-for="ConfirmPassword" class="control-label">Nhập lại mật khẩu</label>
+        <input type="password" asp-for="ConfirmPassword" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 form-group">
+        <label class="font-weight-semibold" asp-for="Avatar">Ảnh đại diện</label>
+        <div class="row">
+            <div class="col-md-4 rounded">
+                <img style="max-width: 80%" id="previewImg" />
+            </div>
+            <div class="col-md-8 pt-5">
+                <input name="fThumb" type="file" class="form-control-file" asp-for="Avatar" onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 form-group px-3">
+        <input type="checkbox" asp-for="IsActive" />
+        <label class="font-weight-semibold" asp-for="IsActive">Kích hoạt</label>
+    </div>
+    <button class="btn btn-primary col-12 " type="submit">Lưu</button>
+</form>
+<div class="row mx-5 my-3">
+    <a class="col-12 btn btn-dark" asp-action="Index">Trở về danh sách</a>
+</div>
+

@@ -17,7 +17,6 @@
         <div class="card-body">
             <h4 class="card-title mb-4">Đăng nhập</h4>
             <form action="/dang-nhap.html?returnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>            
                 <a href="https://www.facebook.com/dialog/oauth?client_id=@Html.DisplayFor(model => model.FacebookAppId)&redirect_uri=@Html.DisplayFor(model => model.FacebookRedirectUri)&&response_type=code&scope=email" class="btn btn-facebook btn-block mb-2"> <i class="fab fa-facebook-f"></i> &nbsp  Đăng nhập với Facebook</a>
                 <a asp-area="" asp-controller="Accounts" asp-action="LoginWithGoogle" class="btn btn-google btn-block mb-4"> <i class="fab fa-google"></i> &nbsp  Đăng nhập với Google</a>
                 <div class="form-group">

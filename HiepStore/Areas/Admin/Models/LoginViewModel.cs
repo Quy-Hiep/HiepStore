@@ -10,7 +10,7 @@ namespace HiepStore.Areas.Admin.Models
         [Required(ErrorMessage = ("Vui lòng nhập Email"))]
         [Display(Name = "Địa chỉ Email")]
         [EmailAddress(ErrorMessage = "Sai định dạng Email")]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         [Display(Name = "Mật khẩu")]
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]

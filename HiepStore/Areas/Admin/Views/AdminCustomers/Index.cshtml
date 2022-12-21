@@ -22,7 +22,7 @@
                     <div class="col-md-6">
                         <div class="input-affix m-v-10">
                             <i class="prefix-icon anticon anticon-search opacity-04"></i>
-                            <input id="keyword" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm sản phẩm">
+                            <input id="keyword" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm khách hàng">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -49,8 +49,7 @@
                     <tr>
                         <th>ID</th>
                         <th>ảnh đại diện</th>
-                        <th>Họ</th>
-                        <th>Tên</th>
+                        <th>Họ Và Tên</th>
                         <th>Email</th>
                         <th>Điện thoại</th>
                         <th>Địa chỉ</th>
@@ -77,8 +76,7 @@
                                     </a>
 
                                 </td>
-                                <td>@item.LastName</td>
-                                <td>@item.FirstName</td>
+                                <td>@item.LastName @item.FirstName</td>
                                 <td>@item.Email</td>
                                 <td>@item.Phone</td>
                                 @if (item.LocationId != null)

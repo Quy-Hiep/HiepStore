@@ -1,0 +1,53 @@
+﻿@model HiepStore.Areas.Admin.Models.AccountViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa thông tin khách hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="text-center">sửa thông tin Tài khoản Quản trị</h2>
+
+<hr />
+<form asp-controller="AdminAccounts" asp-action="Edit" method="post" enctype="multipart/form-data">
+    <div class="row mx-md-4">
+        <div class="col-md-4 m-b-100">
+            <h4 class="text-center">Chỉnh sửa hình ảnh</h4>
+            <img style="max-width: 90%" src="~/assets/images/avatars/@Model.Avatar" id="previewImg" />
+            <input name="fThumb" type="file" class="form-control-file" asp-for="Avatar" onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])" />
+        </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-text">Họ Và tên</span>
+                    <input asp-for="LastName" type="text" class="form-control" placeholder="Họ" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                    <input asp-for="FirstName" type="text" class="form-control" placeholder="Tên" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Email</label>
+                <input asp-for="Email" class="col-sm-10 form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Điện thoại</label>
+                <input asp-for="Phone" class="col-sm-10 form-control" />
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> Kích hoạt
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsDeleted" /> Đưa vào thùng rác
+                </label>
+            </div>
+            <div class="form-group">
+                <a type="button" class="btn btn-primary btn-tone m-r-5" asp-action="Index">Trở về danh sách</a>
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>

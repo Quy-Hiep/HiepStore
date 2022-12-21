@@ -26,6 +26,21 @@ namespace HiepStore.Areas.Admin.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult ValidateEmail(string Email)
+        {
+            try
+            {
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.Email.ToLower() == Email.ToLower());
+                if (khachhang != null)
+                    return Json(data: "Email : " + Email + " đã được sử dụng");
+                return Json(data: true);
+            }
+            catch
+            {
+                return Json(data: true);
+            }
+        }
 
 
         [AllowAnonymous]
@@ -53,7 +68,6 @@ namespace HiepStore.Areas.Admin.Controllers
                         ViewBag.Error = "Thông tin đăng nhập chưa chính xác";
                     }
                     string pass = (model.Password.Trim());
-                    // + kh.Salt.Trim()
                     if (kh.Password.Trim() != pass)
                     {
                         ViewBag.Error = "Thông tin đăng nhập chưa chính xác";

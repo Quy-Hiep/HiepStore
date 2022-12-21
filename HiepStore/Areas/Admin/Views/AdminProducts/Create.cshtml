@@ -1,186 +1,173 @@
-﻿@model HiepStore.Models.Product
+﻿@model HiepStore.Areas.Admin.Models.ProductViewModel
 
 @{
     ViewData["Title"] = "Tạo mới sản phẩm";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-@section Styles{
-    <link href="~/Adminassets/summernote/summernote-bs4.css" rel="stylesheet" />
-    <link href="~/Adminassets/summernote/summernote.css" rel="stylesheet" />
-}
-    <form asp-controller="AdminProducts" asp-action="Create" method="post" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="page-header no-gutters has-tab">
-            <div class="d-md-flex m-b-15 align-items-center justify-content-between">
-                <div class="m-b-15">
-                    <a type="button" class="btn btn-primary" asp-controller="AdminProducts" asp-action="Index">
-                        <i class="fas fa-chevron-circle-left"></i>
-                        <span>Thoát</span>
-                    </a>
-                </div>
-                <div class="m-b-15">
-                    <button class="btn btn-primary">
-                        <i class="anticon anticon-save"></i>
-                        <span>Save</span>
-                    </button>
-                </div>
+
+<form asp-controller="AdminProducts" asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="page-header no-gutters has-tab">
+        <div class="d-md-flex m-b-15 align-items-center justify-content-between">
+            <div class="m-b-15">
+                <a type="button" class="btn btn-primary" asp-controller="AdminProducts" asp-action="Index">
+                    <i class="fas fa-chevron-circle-left"></i>
+                    <span>Thoát</span>
+                </a>
             </div>
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#product-edit-basic">thông tin cơ bản</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#product-edit-option">Thông tin bổ sung</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#product-edit-description">Mô tả đầy đủ</a>
-                </li>
-            </ul>
+            <div class="m-b-15">
+                <button class="btn btn-primary">
+                    <i class="anticon anticon-save"></i>
+                    <span>Save</span>
+                </button>
+            </div>
         </div>
-        <div class="tab-content m-t-15">
-            <div class="tab-pane fade show active" id="product-edit-basic">
-                <div class="card">
-                    <div class="card-body">
-                        <div asp-validation-summary="All" class="text-danger"></div>
-                        <div class="row">
-                            <div class="col md-6">
-                                <div class="form-group">
-                                    <label class="font-weight-semibold" for="Name">Tên sản phẩm</label>
-                                    <input type="text" class="form-control" asp-for="Name">
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-semibold" for="ShortDesc">Mô tả ngắn</label>
-                                    <input type="text" class="form-control" asp-for="ShortDesc">
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-semibold" for="productCategory">Danh mục</label>
-                                    <select class="custom-select" asp-for="CategoryId" style="min-width: 200px;" asp-items="ViewBag.DanhMuc">
-                                        <option value="" disabled selected>Chọn danh mục</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-semibold" for="productCategory">Thương hiệu</label>
-                                    <select class="custom-select" asp-for="BrandId" style="min-width: 200px;" asp-items="ViewBag.ThuongHieu">
-                                        <option value="" disabled selected>Chọn thương hiệu</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-semibold" for="productCategory">Loại sản phẩm</label>
-                                    <select class="custom-select" asp-for="TypeId" style="min-width: 200px;" asp-items="ViewBag.LoaiSanPham">
-                                        <option value="" disabled selected>Chọn loại sản phẩm</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-semibold" for="productBrand">Ảnh đại diện</label>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <img style="max-width: 90%" id="previewImg" />
-                                        </div>
-                                        <div class="col-md-8 pt-5">
-                                            <input name="fThumb" type="file" class="form-control-file" asp-for="Thumb" onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])" />
-                                            <span asp-validation-for="Thumb" class="text-danger"></span>
-                                        </div>
-
-                                    </div>
-
-
-                                </div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#product-edit-basic">thông tin cơ bản</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#product-edit-option">Thông tin bổ sung</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#product-edit-description">Mô tả đầy đủ</a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content m-t-15">
+        <div class="tab-pane fade show active" id="product-edit-basic">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col md-6">
+                            <div class="form-group">
+                                <label class="font-weight-semibold" for="Name">Tên sản phẩm</label>
+                                <input type="text" class="form-control" asp-for="Name">
+                                <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
-                            <div class="col md-6">
-                                <div class="form-group">
-                                    <label class="font-weight-semibold" for="productPrice">Giá bán</label>
-                                    <input type="text" class="form-control" asp-for="Price">
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-semibold" for="productPrice">Giá giảm</label>
-                                    <input type="text" class="form-control" asp-for="Discount">
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-weight-semibold" for="Name">Hàng tồn kho</label>
-                                    <input type="text" class="form-control" asp-for="UnitsInStock">
-                                </div>
+                            <div class="form-group">
+                                <label class="font-weight-semibold" for="ShortDesc">Mô tả ngắn</label>
+                                <input type="text" class="form-control" asp-for="ShortDesc">
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-semibold" for="productCategory">Danh mục</label>
+                                <select class="custom-select" asp-for="CategoryId" style="min-width: 200px;" asp-items="ViewBag.DanhMuc">
+                                    <option value="" disabled selected>Chọn danh mục</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-semibold" for="productCategory">Thương hiệu</label>
+                                <select class="custom-select" asp-for="BrandId" style="min-width: 200px;" asp-items="ViewBag.ThuongHieu">
+                                    <option value="" disabled selected>Chọn thương hiệu</option>
+                                </select>
+                                <span asp-validation-for="BrandId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-semibold" for="TypeId">Loại sản phẩm</label>
+                                <select class="custom-select" asp-for="TypeId" style="min-width: 200px;" asp-items="ViewBag.LoaiSanPham">
+                                    <option value="" disabled selected>Chọn loại sản phẩm</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-semibold" for="productBrand">Ảnh đại diện</label>
                                 <div class="row">
-                                    <div class="m-t-25">
-                                        <div class="form-group d-flex align-items-center">
-                                            <div class="switch m-r-10">
-                                                <input type="checkbox" asp-for="IsActive">
-                                                <label for="IsActive"></label>
-                                            </div>
-                                            <label>Kích hoạt</label>
-                                        </div>
-                                        <div class="form-group d-flex align-items-center">
-                                            <div class="switch m-r-10">
-                                                <input type="checkbox" asp-for="IsShowOnHomePage">
-                                                <label for="IsShowOnHomePage"></label>
-                                            </div>
-                                            <label>Hiển thị trang chủ</label>
-                                        </div>
-                                        <div class="form-group d-flex align-items-center">
-                                            <div class="switch m-r-10">
-                                                <input type="checkbox" asp-for="IsDeleted">
-                                                <label for="IsDeleted"></label>
-                                            </div>
-                                            <label>Đưa vào thùng rác</label>
-                                        </div>
+                                    <div class="col-md-4">
+                                        <img style="max-width: 90%" id="previewImg" />
                                     </div>
+                                    <div class="col-md-8 pt-5">
+                                        <input name="fThumb" type="file" class="form-control-file" asp-for="Thumb" onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])" />
+                                    </div>
+
                                 </div>
+
 
                             </div>
                         </div>
+                        <div class="col md-6">
+                            <div class="form-group">
+                                <label class="font-weight-semibold" for="productPrice">Giá bán</label>
+                                <input type="text" class="form-control" asp-for="Price">
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-semibold" for="Discount">Giá giảm</label>
+                                <input type="text" class="form-control" asp-for="Discount">
+                                <span asp-validation-for="Discount" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-semibold" for="Name">Hàng tồn kho</label>
+                                <input type="text" class="form-control" asp-for="UnitsInStock">
+                                <span asp-validation-for="UnitsInStock" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-semibold" for="Configuration">Cấu hình</label>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <textarea class="summernote" asp-for="Configuration"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="m-t-25">
+                                    <div class="form-group d-flex align-items-center">
+                                        <div class="switch m-r-10">
+                                            <input type="checkbox" asp-for="IsActive">
+                                            <label for="IsActive"></label>
+                                        </div>
+                                        <label>Kích hoạt</label>
+                                    </div>
+                                    <div class="form-group d-flex align-items-center">
+                                        <div class="switch m-r-10">
+                                            <input type="checkbox" asp-for="IsShowOnHomePage">
+                                            <label for="IsShowOnHomePage"></label>
+                                        </div>
+                                        <label>Hiển thị trang chủ</label>
+                                    </div>
+                                    <div class="form-group d-flex align-items-center">
+                                        <div class="switch m-r-10">
+                                            <input type="checkbox" asp-for="IsDeleted">
+                                            <label for="IsDeleted"></label>
+                                        </div>
+                                        <label>Đưa vào thùng rác</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
 
 
-                    </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="product-edit-option">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label class="font-weight-semibold" for="productSize">Title</label>
-                            <input type="text" class="form-control" asp-for="Title">
-                        </div>
-                        <div class="form-group">
-                            <label class="font-weight-semibold" for="productColors">MetaDesc</label>
-                            <input type="text" class="form-control" asp-for="MetaDesc">
-                        </div>
-                        <div class="form-group">
-                            <label class="font-weight-semibold" for="productFit">MetaKey</label>
-                            <input type="text" class="form-control" asp-for="MetaKey">
-                        </div>
-                        <div class="form-group">
-                            <label class="font-weight-semibold" for="productFit">Tags</label>
-                            <input type="text" class="form-control" asp-for="Tags">
-                        </div>
+        </div>
+        <div class="tab-pane fade" id="product-edit-option">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productSize">Title</label>
+                        <input type="text" class="form-control" asp-for="Title">
                     </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="product-edit-description">
-                <div class="card">
-                    <div class="card-body">
-                        <textarea class="summernote" asp-for="Description"></textarea>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productColors">MetaDesc</label>
+                        <input type="text" class="form-control" asp-for="MetaDesc">
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productFit">MetaKey</label>
+                        <input type="text" class="form-control" asp-for="MetaKey">
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productFit">Tags</label>
+                        <input type="text" class="form-control" asp-for="Tags">
                     </div>
                 </div>
             </div>
         </div>
-    </form>
-
-    @section Scripts{
-    <script src="~/Adminassets/vendors/select2/select2.min.js"></script>
-    <script src="~/Adminassets/js/pages/e-commerce-product-edit.js"></script>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js"></script>
-    <script src="~/Adminassets/summernote/summernote-bs4.js"></script>
-
-    <script>
-
-        jQuery(document).ready(function () {
-            $('.summernote').summernote({
-                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New'],
-                styleTags: ['p', 'h1', 'h2', 'h3', 'h4', 'h5'],
-                height: 200,
-                minHeight: null,
-                maxHeight: null,
-                focus: true
-            });
-        });
-    </script>
-}
+        <div class="tab-pane fade" id="product-edit-description">
+            <div class="card">
+                <div class="card-body">
+                    <textarea class="summernote" asp-for="Description"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

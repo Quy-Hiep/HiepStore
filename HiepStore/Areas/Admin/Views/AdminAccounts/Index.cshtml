@@ -1,0 +1,155 @@
+﻿@using PagedList.Core.Mvc
+@model PagedList.Core.IPagedList<HiepStore.Models.Account>
+
+@{
+    int CurrentPage = ViewBag.CurrentPage;
+    ViewData["Title"] = "Danh sách Tài khoản Quản trị";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <span class="breadcrumb-item active">Danh sách Tài khoản Quản trị : trang @CurrentPage</span>
+        </nav>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row m-b-30">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-affix m-v-10">
+                            <i class="prefix-icon anticon anticon-search opacity-04"></i>
+                            <input id="keyword" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm sản phẩm">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-affix m-v-10">
+                            <select class="custom-select" id="idstatus" name="idstatus" style="min-width: 200px;" asp-items="ViewBag.lsTrangThai">
+                                <option disabled selected>Chọn trạng thái</option>
+                                <option value="2">Chọn tất cả</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 text-right">
+                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Create"><i class="anticon anticon-plus-circle m-r-5"></i><span>Thêm</span></a>
+            </div>
+            <div class="col-lg-2 text-right">
+                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Trash"><i class="anticon anticon-plus-circle m-r-5"></i><span>Thùng rác</span></a>
+            </div>
+        </div>
+        <div class="table-responsive" style="height: 30em">
+            <table class="table table-hover e-commerce-table" height="300px">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ảnh đại diện</th>
+                        <th>Họ</th>
+                        <th>Tên</th>
+                        <th>Email</th>
+                        <th>Điện thoại</th>
+                        <th>login mới</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="records_table">
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    @item.Id
+                                </td>
+
+                                <td>
+                                    <a href="@Url.Action("Details","AdminCustomers", new { id = item.Id })">
+                                        <div class="d-flex align-items-center text-wrap" style="max-width: 60px">
+                                            <img class="img-fluid rounded" src="~/assets/images/avatars/@item.Avatar" style="max-width: 60px" alt="Ảnh đại diện" />
+                                        </div>
+                                    </a>
+
+                                </td>
+                                <td>@item.LastName</td>
+                                <td>@item.FirstName</td>
+                                <td>@item.Email</td>
+                                <td>@item.Phone</td>
+
+                                <td>
+                                    <a type="button" class="btn btn-primary btn-tone m-r-5" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a>
+                                    <a type="button" class="btn btn-secondary btn-tone m-r-5" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                                    <a type="button" class="btn btn-success btn-tone m-r-5" asp-area="Admin" asp-controller="AdminAccounts" asp-action="DeleteTrash" asp-route-id="@item.Id">Xóa</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+        <div aria-label="Page navigation example">
+            <ul class="pagination">
+                <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminAccount" asp-action="Index" />
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            jQuery("#idstatus").change(function () {
+                var isActive = jQuery(this).children(":selected").attr("value");
+                isActive = parseFloat(isActive);
+                $('#idstatus option')
+                    .removeAttr('selected');
+                $("#idstatus > [value=" + isActive + "]").attr("selected", "true");
+                $.ajax({
+                    url: '/Admin/AdminAccounts/FiltterStatus',
+                    datatype: "json",
+                    type: "GET",
+                    data: {
+                        IsActive: isActive
+                    },
+                    async: true,
+                    success: function (results) {
+                        if (results.status == "success") {
+                            window.location.href = results.redirectUrl;
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('error');
+                    }
+                });
+            });
+
+            $("#keyword").keyup(function () {
+                var strkeyword = $('#keyword').val();
+                $.ajax({
+                    url: '/Admin/Search/FindAccount/',
+                    datatype: "json",
+                    type: "POST",
+                    data: { keyword: strkeyword },
+                    async: true,
+                    success: function (results) {
+                        $("#records_table").html("");
+                        $("#records_table").html(results);
+                    },
+                    error: function (xhr) {
+                        alert('error');
+                    }
+                });
+            });
+        });
+    </script>
+
+}
+

@@ -30,29 +30,28 @@
                             <div class="card shadow-lg">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between m-b-30">
-                                        <img class="img-fluid" alt="" src="~/Adminassets/images/logo/logo.png">
+                                        <img class="img-fluid" alt="" src="~/Adminassets/images/logo/HiepStore_admin.png">
                                     </div>
                                     <form action="/admin-login.html?returnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
-                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                         <div class="form-group">
-                                            <label class="font-weight-semibold" for="userName">Tài khoản:</label>
+                                            <label class="font-weight-semibold" for="UserName">Tài khoản:</label>
                                             <div class="input-affix">
                                                 <i class="prefix-icon anticon anticon-user"></i>
-                                                <input type="text" class="form-control" asp-for="UserName" placeholder="Tài khoản">
-                                                <span asp-validation-for="UserName" class="text-danger"></span>
+                                                <input type="email" class="form-control" asp-for="UserName" placeholder="Tài khoản">
                                             </div>
+                                            <span asp-validation-for="UserName" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <label class="font-weight-semibold" for="password">Mật khẩu:</label>
+                                            <label class="font-weight-semibold" for="Password">Mật khẩu:</label>
                                             <div class="input-affix m-b-10">
                                                 <i class="prefix-icon anticon anticon-lock"></i>
                                                 <input type="password" class="form-control" asp-for="Password" placeholder="Mật khẩu">
-                                                <span asp-validation-for="Password" class="text-danger"></span>
                                             </div>
+                                            <span asp-validation-for="Password" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <button class="btn btn-primary">Đăng nhập</button>
+                                                <button type="submit" class="btn btn-primary">Đăng nhập</button>
                                                 <p class="mg-b-0"> @ViewBag.Eror</p>
                                             </div>
                                         </div>
@@ -74,6 +73,11 @@
     <!-- page js -->
     <!-- Core JS -->
     <script src="~/Adminassets/js/app.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 </body>
 

@@ -277,17 +277,6 @@ namespace HiepStore.Controllers
 				khachhang.LastLogin= DateTime.Now;
 				_context.Update(khachhang);
 				await _context.SaveChangesAsync();
-				//Identity
-				//var claims = new List<Claim>
-				//{
-				//    new Claim(ClaimTypes.Email, khachhang.Email),
-				//    new Claim("CustomerId", khachhang.Id.ToString())
-
-				//};
-				//var claimsIdentity = new ClaimsIdentity(claims, "User Identity");
-				//var claimsPrincipal = new ClaimsPrincipal(new[] { claimsIdentity });
-				//await HttpContext.SignInAsync(claimsPrincipal);
-
 
 				_notyfService.Success("Đăng nhập thành công");
                 if (string.IsNullOrEmpty(returnUrl))
@@ -350,15 +339,6 @@ namespace HiepStore.Controllers
                             //Lưu Session CustomerId
                             HttpContext.Session.SetString("CustomerId", customer.Id.ToString());
 
-                            //Identity
-                            //var claims = new List<Claim>
-                            //{
-                            //    new Claim(ClaimTypes.Name,customer.FirstName),
-                            //    new Claim("CustomerId", customer.Id.ToString())
-                            //};
-                            //ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
-                            //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                            //await HttpContext.SignInAsync(claimsPrincipal);
                             _notyfService.Success("Đăng nhập với facebook thành công");
 							return RedirectToAction("Dashboard", "Accounts");
                         }

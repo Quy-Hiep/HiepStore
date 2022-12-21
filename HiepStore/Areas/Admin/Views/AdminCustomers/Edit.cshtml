@@ -1,4 +1,4 @@
-﻿@model HiepStore.Models.Customer
+﻿@model HiepStore.Areas.Admin.Models.CustomersViewModel
 
 @{
     ViewData["Title"] = "Chỉnh sửa thông tin khách hàng";
@@ -9,26 +9,26 @@
 
 <hr />
 <form asp-controller="AdminCustomers"  asp-action="Edit" method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="row mx-md-4">
         <div class="col-md-4 m-b-100">
             <h4 class="text-center">Chỉnh sửa hình ảnh</h4>
             <img style="max-width: 90%" src="~/assets/images/avatars/@Model.Avatar" id="previewImg" />
             <input name="fThumb" type="file" class="form-control-file" asp-for="Avatar" onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])" />
-            <span asp-validation-for="Avatar" class="text-danger"></span>
         </div>
         <div class="col-md-8">
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-text">Họ Và tên</span>
                     <input asp-for="LastName" type="text" class="form-control" placeholder="Họ" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                     <input asp-for="FirstName" type="text" class="form-control" placeholder="Tên" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Ngày sinh</label>
                 <input asp-for="Birthday" class="col-sm-10 form-control" />
-                <span asp-validation-for="Birthday" class="text-danger"></span>
             </div>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Email</label>
@@ -38,7 +38,6 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Điện thoại</label>
                 <input asp-for="Phone" class="col-sm-10 form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="row">
                 <div class="col form-group">
@@ -63,19 +62,6 @@
             <div class="form-group">
                 <label class="control-label">Địa chỉ chi tiết</label>
                 <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Ngày tạo</label>
-                <input asp-for="CreatedAt" class="form-control" disabled />
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedAt" class="control-label"></label>
-                <input asp-for="UpdatedAt" class="form-control" disabled />
-            </div>
-            <div class="form-group">
-                <label asp-for="LastLogin" class="control-label"></label>
-                <input asp-for="LastLogin" class="form-control" disabled />
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">

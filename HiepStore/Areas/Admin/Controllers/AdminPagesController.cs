@@ -15,7 +15,6 @@ using HiepStore.Models;
 namespace HiepStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize]
     public class AdminPagesController : Controller
     {
         private readonly db_hiep_storeContext _context;
