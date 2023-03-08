@@ -112,26 +112,20 @@
                             <div class="row">
                                 <div class="col-sm-4 mb-3">
                                     <label for="" class="form-label">Tỉnh / Thành phố*</label>
-                                    <select class="form-control" id="city*" aria-label="City*">
-                                        <option value="1">New York</option>
-                                        <option value="2">Moscow</option>
-                                        <option value="3">Samarqand</option>
+                                    <select class="form-control" asp-for="TinhThanh" style="min-width: 200px;" asp-items="ViewBag.TinhThanh">
+                                        <option value="" disabled selected>Chọn tỉnh thành</option>
                                     </select>
                                 </div> <!-- col end.// -->
                                 <div class="col-sm-4 mb-3">
                                     <label for="" class="form-label">Quận / Huyện*</label>
-                                    <select class="form-control" id="city*" aria-label="City*">
-                                        <option value="1">New York</option>
-                                        <option value="2">Moscow</option>
-                                        <option value="3">Samarqand</option>
+                                    <select class="form-control" asp-for="QuanHuyen" style="min-width: 200px;" asp-items="ViewBag.QuanHuyen">
+                                        <option value="" disabled selected>Chọn Quận Huyện</option>
                                     </select>
                                 </div> <!-- col end.// -->
                                 <div class="col-sm-4 mb-3">
                                     <label for="" class="form-label">Xã / Phường*</label>
-                                    <select class="form-control" id="city*" aria-label="City*">
-                                        <option value="1">New York</option>
-                                        <option value="2">Moscow</option>
-                                        <option value="3">Samarqand</option>
+                                    <select class="form-control" asp-for="PhuongXa" style="min-width: 200px;" asp-items="ViewBag.XaPhuong">
+                                        <option value="" disabled selected>Chọn phường xã</option>
                                     </select>
                                 </div> <!-- col end.// -->
 

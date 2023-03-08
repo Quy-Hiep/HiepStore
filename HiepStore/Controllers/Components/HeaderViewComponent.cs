@@ -26,7 +26,10 @@ namespace HiepStore.Controllers.Components
 				.AsNoTracking()
 				.Where(x => x.IsPublished == true && x.IsDeleted == false)
 				.OrderByDescending(x => x.Ordering).ToList();
-			return View(homeModel);
+
+            ViewBag.customerId = HttpContext.Session.GetString("CustomerId");
+
+            return View(homeModel);
         }
 
     }

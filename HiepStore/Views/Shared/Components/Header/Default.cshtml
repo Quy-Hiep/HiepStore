@@ -42,7 +42,7 @@
 								<small class="text"> Tài khoản </small>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
-								@if (User.Identity.IsAuthenticated)
+								@if (ViewBag.customerId!=null)
 								{
 									<li><a class="dropdown-item" href="@Url.Action("Dashboard", "Accounts")">Tài khoản của tôi</a></li>
 								}

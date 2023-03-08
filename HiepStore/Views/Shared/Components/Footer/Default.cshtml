@@ -58,7 +58,8 @@
                     <ul class="list-unstyled">
                         @foreach (var item in Model.ListBrand.Take(4))
                         {
-                            <li> <a href="/thuonghieu/apple">@item.Name</a></li>
+                            string url = $"/thuonghieu/{item.Alias}";
+                            <li> <a href="@url">@item.Name</a></li>
                         }
                         <li> <a asp-controller="Brand" asp-action="Index">Tất cả thương hiệu</a></li>
                     </ul>
@@ -69,15 +70,15 @@
                         <li> <a href="/page/ve-chung-toi">Về chúng tôi</a></li>
                         <li> <a href="/page/tim-kiem-cua-hang">Tìm kiếm cửa hàng offline</a></li>
                         <li> <a href="/page/dieu-khoan">Điều khoản</a></li>
-                        <li> <a href="/page/chinh-sach-bao-nat">Điều khoản</a></li>
+                        <li> <a href="/page/chinh-sach-bao-mat">Điều khoản</a></li>
                     </ul>
                 </aside>
                 <aside class="col-md col-6">
                     <h6 class="title">Trợ giúp</h6>
                     <ul class="list-unstyled">
                         <li> <a href="/page/cong-tac">Cộng tác với chúng tôi</a></li>
-                        <li> <a href="#">Phương thức thanh toán</a></li>
-                        <li> <a href="#">Trạng thái đơn hàng</a></li>
+                        <li> <a href="/page/Phuong-thuc-thanh-toan">Phương thức thanh toán</a></li>
+                        <li> <a asp-action="Dashboard" asp-controller="Accounts">Trạng thái đơn hàng</a></li>
                         <li> <a asp-area="Admin" asp-controller="Home" asp-action="Index">Trang quản trị</a></li>
                     </ul>
                 </aside>

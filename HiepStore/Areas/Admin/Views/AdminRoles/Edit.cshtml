@@ -1,0 +1,27 @@
+﻿@model HiepStore.Models.Role
+
+@{
+    ViewData["Title"] = "Chỉnh sửa quyền truy cập";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="text-center">Chỉnh sửa quyền truy cập</h2>
+
+<hr />
+<form asp-controller="AdminRoles" asp-action="Edit" method="post">
+    <div class="row w-100 m-auto">
+        <div class="col-12 form-group">
+            <label asp-for="Name" class="control-label">Tên</label>
+            <input asp-for="Name" class="form-control" required/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="col-12 form-group">
+            <label asp-for="Description" class="control-label">Mô tả</label>
+            <input asp-for="Description" class="form-control" />
+        </div>
+    </div>
+    <button class="btn btn-primary col-12 " type="submit">Lưu</button>
+</form>
+<div class="row mx-1 my-3">
+    <a class="col-12 btn btn-dark" asp-action="Index">Trở về danh sách</a>
+</div>

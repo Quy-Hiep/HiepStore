@@ -33,7 +33,6 @@ namespace HiepStore.Controllers
                 return gh;
             }
         }
-        //[Authorize]
         [Route("checkout.html", Name = "Checkout")]
         public IActionResult Index(string returnUrl)
         {
@@ -60,13 +59,14 @@ namespace HiepStore.Controllers
                 model.Phone = khachhang.Phone;
                 model.Address = khachhang.Address;
             }
-            ViewData["lsTinhThanh"] = new SelectList(_context.Locations.Where(x => x.Levels == 1).OrderBy(x => x.Type).ToList(), "Location", "Name");
+            ViewBag.TinhThanh = new SelectList(_context.Locations, "Id", "Name");
+            ViewBag.QuanHuyen = new SelectList(_context.Districts, "Id", "Name");
+            ViewBag.XaPhuong = new SelectList(_context.Wards, "Id", "Name");
             ViewBag.GioHang = cart;
             return View(model);
         }
 
         [HttpPost]
-        //[Authorize]
         [Route("checkout.html", Name = "Checkout")]
         public IActionResult Index(MuaHangVM muaHang)
         {
@@ -183,8 +183,6 @@ namespace HiepStore.Controllers
 
                 //cap nhat thong tin khach hang
                 return RedirectToAction("Success");
-
-
                 //}
             }
             catch
@@ -193,9 +191,6 @@ namespace HiepStore.Controllers
                 ViewBag.GioHang = cart;
                 return View(model);
             }
-            ViewData["lsTinhThanh"] = new SelectList(_context.Locations.Where(x => x.Levels == 1).OrderBy(x => x.Type).ToList(), "Location", "Name");
-            ViewBag.GioHang = cart;
-            return View(model);
         }
         [Route("dat-hang-thanh-cong.html", Name = "Success")]
         public IActionResult Success()

@@ -1,0 +1,25 @@
+﻿@model HiepStore.Models.Role
+
+@{
+    ViewData["Title"] = "Thêm mới quyền truy cập";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="d-flex justify-content-center">Thêm Quyền truy cập</h1>
+<hr />
+<form class="row mx-5" asp-action="Create">
+    <div class="col-md-6 form-group">
+        <label asp-for="Name" class="control-label">Tên</label>
+        <input asp-for="Name" class="form-control" required/>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="col-md-5 form-group">
+        <label asp-for="Description" class="control-label">Mô tả</label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+    <button class="btn btn-primary col-12 " type="submit">Lưu</button>
+</form>
+<div class="row mx-5 my-3">
+    <a class="col-12 btn btn-dark" asp-action="Index">Trở về danh sách</a>
+</div>
+
